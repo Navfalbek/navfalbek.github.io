@@ -1,7 +1,5 @@
 import {
-  AcademicCapIcon,
   ArrowDownTrayIcon,
-  BuildingOffice2Icon,
   CalendarIcon,
   FlagIcon,
   MapIcon,
@@ -76,14 +74,12 @@ export const heroData: Hero = {
   description: (
     <>
       <p className="prose-sm text-stone-200 sm:prose-base lg:prose-lg">
-        I'm a Victoria based <strong className="text-stone-100">Full Stack Software Engineer</strong>, currently working
-        at <strong className="text-stone-100">Instant Domains</strong> helping build a modern, mobile-first, domain
-        registrar and site builder.
+        I'm a student at <strong className="text-stone-100">Inha University in Tashkent</strong>, majoring in Computer Science. 
+        My primary focus and Interests are Machine Learning and Space Exploration. 
       </p>
       <p className="prose-sm text-stone-200 sm:prose-base lg:prose-lg">
-        In my free time time, you can catch me training in <strong className="text-stone-100">Muay Thai</strong>,
-        plucking my <strong className="text-stone-100">banjo</strong>, or exploring beautiful{' '}
-        <strong className="text-stone-100">Vancouver Island</strong>.
+        In my free time time, I like to <strong className="text-stone-100">Volunteer</strong> in the events,{' '}
+        <strong className="text-stone-100">Running</strong> and to watch <strong className='text-stone-100'>Amine</strong>.
       </p>
     </>
   ),
@@ -117,7 +113,7 @@ const currentAge = new Date().getFullYear() - birthDate.getFullYear() -
  */
 export const aboutData: About = {
   profileImageSrc: profilepic,
-  description: `Hello Crew! I'm Navfal Makhfuzullaev a senior student at Inha University in Tashkent.`,
+  description: `Hello Crew! I'm Navfal Makhfuzullaev a senior student at Inha University in Tashkent. `,
   aboutItems: [
     {label: 'Location', text: 'Uzbekistan, Fergana', Icon: MapIcon},
     {label: 'Age', text: `${currentAge}`, Icon: CalendarIcon},
@@ -141,73 +137,11 @@ export const aboutData: About = {
  */
 export const skills: SkillGroup[] = [
   {
-    name: 'Spoken languages',
-    skills: [
-      {
-        name: 'English',
-        level: 10,
-      },
-      {
-        name: 'French',
-        level: 4,
-      },
-      {
-        name: 'Spanish',
-        level: 3,
-      },
-    ],
+    text: <p><b style={{ fontWeight: '700' }}>Skills:</b> Python, Managing Databases (MySQL, PostgreSQL), Deep learning, TensorFlow, OpenCV, Matplotlip, Scikit-learn, Numpy, Machine Learning, Pandas, Scipy</p>
   },
   {
-    name: 'Frontend development',
-    skills: [
-      {
-        name: 'React',
-        level: 9,
-      },
-      {
-        name: 'Typescript',
-        level: 7,
-      },
-      {
-        name: 'GraphQL',
-        level: 6,
-      },
-    ],
-  },
-  {
-    name: 'Backend development',
-    skills: [
-      {
-        name: 'Node.js',
-        level: 8,
-      },
-      {
-        name: 'Rust',
-        level: 5,
-      },
-      {
-        name: 'Golang',
-        level: 4,
-      },
-    ],
-  },
-  {
-    name: 'Mobile development',
-    skills: [
-      {
-        name: 'React Native',
-        level: 9,
-      },
-      {
-        name: 'Flutter',
-        level: 4,
-      },
-      {
-        name: 'Swift',
-        level: 3,
-      },
-    ],
-  },
+    text: <p><b style={{ fontWeight: '700' }}>Developer Tools:</b> Git, Visual Studio, PyCharm, Linux, LateX, Tableau</p>
+  }
 ];
 
 /**

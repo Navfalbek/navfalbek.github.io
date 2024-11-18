@@ -51,26 +51,25 @@ export interface AboutItem {
 
 /**
  * Stat section
- */
-export interface Stat {
-  title: string;
-  value: number;
-  Icon?: ForwardRefExoticComponent<Omit<SVGProps<SVGSVGElement>, 'ref'>>;
-}
+//  */
+// export interface Stat {
+//   title: string;
+//   value: number;
+//   Icon?: ForwardRefExoticComponent<Omit<SVGProps<SVGSVGElement>, 'ref'>>;
+// }
 
 /**
  * Skills section
  */
 
 export interface Skill {
-  name: string;
-  level: number;
-  max?: number;
+  text: React.ReactNode;
+  // max?: number;
 }
 
 export interface SkillGroup {
-  name: string;
-  skills: Skill[];
+  text: React.ReactNode;
+  // skills: Skill[];
 }
 
 /**
