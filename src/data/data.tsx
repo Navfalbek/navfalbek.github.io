@@ -12,17 +12,10 @@ import InstagramIcon from '../components/Icon/InstagramIcon';
 import LinkedInIcon from '../components/Icon/LinkedInIcon';
 import TwitterIcon from '../components/Icon/TwitterIcon';
 import heroImage from '../images/background-2.jpg';
-import porfolioImage1 from '../images/portfolio/portfolio-1.jpg';
-import porfolioImage2 from '../images/portfolio/portfolio-2.jpg';
-import porfolioImage3 from '../images/portfolio/portfolio-3.jpg';
-import porfolioImage4 from '../images/portfolio/portfolio-4.jpg';
-import porfolioImage5 from '../images/portfolio/portfolio-5.jpg';
-import porfolioImage6 from '../images/portfolio/portfolio-6.jpg';
-import porfolioImage7 from '../images/portfolio/portfolio-7.jpg';
-import porfolioImage8 from '../images/portfolio/portfolio-8.jpg';
-import porfolioImage9 from '../images/portfolio/portfolio-9.jpg';
-import porfolioImage10 from '../images/portfolio/portfolio-10.jpg';
-import porfolioImage11 from '../images/portfolio/portfolio-11.jpg';
+import porfolioImage2 from '../images/portfolio/joi.jpg';
+import porfolioImage3 from '../images/portfolio/uzchess-bots.jpg';
+import porfolioImage4 from '../images/portfolio/flappybird.png';
+import porfolioImage5 from '../images/portfolio/currecny-converter.png'
 import profilepic from '../images/profile-pic.jpg';
 import testimonialImage from '../images/background-2.jpg';
 import {
@@ -113,7 +106,7 @@ const currentAge = new Date().getFullYear() - birthDate.getFullYear() -
  */
 export const aboutData: About = {
   profileImageSrc: profilepic,
-  description: `Hello Crew! I'm Navfal Makhfuzullaev a senior student at Inha University in Tashkent. `,
+  description: `Hello Crew! I'm Navfal Makhfuzullaev a senior student at Inha University in Tashkent`,
   aboutItems: [
     {label: 'Location', text: 'Uzbekistan, Fergana', Icon: MapIcon},
     {label: 'Age', text: `${currentAge}`, Icon: CalendarIcon},
@@ -149,71 +142,35 @@ export const skills: SkillGroup[] = [
  */
 export const portfolioItems: PortfolioItem[] = [
   {
-    title: 'Project title 1',
-    description: 'Give a short description of your project here.',
-    url: 'https://reactresume.com',
-    image: porfolioImage1,
+    title: 'Joi - voice assistant',
+    description: 'A Simple personal voice assistant. Voice assistant that can handle some automations in the PC.',
+    url: 'https://github.com/Navfalbek/Joi-assistant',
+    image: porfolioImage2,
   },
   {
-    title: 'Project title 2',
+    title: 'My personal website',
     description: 'Give a short description of your project here.',
     url: 'https://reactresume.com',
     image: porfolioImage2,
   },
   {
-    title: 'Project title 3',
-    description: 'Give a short description of your project here.',
-    url: 'https://reactresume.com',
+    title: 'UzChess Bots',
+    description: 'Chess bots of Uzbek Grandmasters implemented to UzChess platform.',
+    url: 'https://play.google.com/store/search?q=uzchess&c=apps&hl=en',
     image: porfolioImage3,
   },
   {
-    title: 'Project title 4',
-    description: 'Give a short description of your project here.',
-    url: 'https://reactresume.com',
+    title: 'Deep learning project - Flappybird',
+    description: 'Flappybird game trained with Deep Q-learning algorithm.',
+    url: 'https://github.com/Navfalbek/dlcv',
     image: porfolioImage4,
   },
   {
-    title: 'Project title 5',
-    description: 'Give a short description of your project here.',
-    url: 'https://reactresume.com',
+    title: 'Currency converter',
+    description: 'Currency converter app which contains more than 180+ real time currency rates.',
+    url: 'https://github.com/Navfalbek/currency-converter',
     image: porfolioImage5,
-  },
-  {
-    title: 'Project title 6',
-    description: 'Give a short description of your project here.',
-    url: 'https://reactresume.com',
-    image: porfolioImage6,
-  },
-  {
-    title: 'Project title 7',
-    description: 'Give a short description of your project here.',
-    url: 'https://reactresume.com',
-    image: porfolioImage7,
-  },
-  {
-    title: 'Project title 8',
-    description: 'Give a short description of your project here.',
-    url: 'https://reactresume.com',
-    image: porfolioImage8,
-  },
-  {
-    title: 'Project title 9',
-    description: 'Give a short description of your project here.',
-    url: 'https://reactresume.com',
-    image: porfolioImage9,
-  },
-  {
-    title: 'Project title 10',
-    description: 'Give a short description of your project here.',
-    url: 'https://reactresume.com',
-    image: porfolioImage10,
-  },
-  {
-    title: 'Project title 11',
-    description: 'Give a short description of your project here.',
-    url: 'https://reactresume.com',
-    image: porfolioImage11,
-  },
+  }
 ];
 
 /**
