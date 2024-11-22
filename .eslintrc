@@ -16,7 +16,7 @@
     "plugin:@next/next/recommended",
     "prettier"
   ],
-  "ignorePatterns": ["*/public", "*/node_modules/*", "*/.next/*", "*/dist/*"],
+  "ignorePatterns": ["*/public", "*/node_modules/*", "*/.next/*", "*/dist/*", "*/.github/*"],
   "rules": {
     "react/display-name": "off",
     // The next two rules should be errors. But for now we"ll leave them as warnings since this will take a while

@@ -51,12 +51,14 @@ export interface AboutItem {
 
 /**
  * Stat section
-//  */
-// export interface Stat {
-//   title: string;
-//   value: number;
-//   Icon?: ForwardRefExoticComponent<Omit<SVGProps<SVGSVGElement>, 'ref'>>;
-// }
+ */
+/**
+ * export interface Stat {
+ *  title: string;
+ *  value: number;
+ *  Icon?: ForwardRefExoticComponent<Omit<SVGProps<SVGSVGElement>, 'ref'>>;
+ * }
+ */
 
 /**
  * Skills section

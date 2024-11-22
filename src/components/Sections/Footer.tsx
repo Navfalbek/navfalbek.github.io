@@ -21,11 +21,9 @@ const Footer: FC = memo(() => (
       </div>
       <a
         className="-m-2 flex items-center gap-x-1 rounded-md p-2 ring-yellow focus:outline-none focus:ring-2"
-        href='https://t.me/navfalsnebula'>
-        <StarIcon className="h-5 w-5"/>
-        <span>
-          Navfal's Nebula
-        </span>
+        href="https://t.me/navfalsnebula">
+        <StarIcon className="h-5 w-5" />
+        <span>Navfal's Nebula</span>
       </a>
       <span className="text-sm text-neutral-700">© Copyright {currentYear} Navfal Makhfuzullaev</span>
     </div>

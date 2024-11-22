@@ -1,13 +1,11 @@
-import {FC, memo, PropsWithChildren } from 'react';
+import {FC, memo, PropsWithChildren} from 'react';
 
 import {Skill as SkillType, SkillGroup as SkillGroupType} from '../../../data/dataDef';
 
-export const SkillGroup: FC<PropsWithChildren<{ skillGroup: SkillGroupType }>> = memo(
-  ({ skillGroup }) => {
-    const { text } = skillGroup;
-    return <div className="flex flex-col">{text}</div>;
-  }
-);
+export const SkillGroup: FC<PropsWithChildren<{skillGroup: SkillGroupType}>> = memo(({skillGroup}) => {
+  const {text} = skillGroup;
+  return <div className="flex flex-col">{text}</div>;
+});
 
 SkillGroup.displayName = 'SkillGroup';
 
