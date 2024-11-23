@@ -70,7 +70,7 @@ export const heroData: Hero = {
       <p className="prose-sm text-stone-200 sm:prose-base lg:prose-lg">
         In my free time time, I like to <strong className="text-stone-100">Volunteer</strong> in the events,{' '}
         <strong className="text-stone-100">Running</strong> and to watch{' '}
-        <strong className="text-stone-100">Amine</strong>.
+        <strong className="text-stone-100">Anime</strong>.
       </p>
     </>
   ),
