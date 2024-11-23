@@ -37,7 +37,7 @@ const DesktopNav: FC<{navSections: SectionId[]; currentSection: SectionId | null
     const activeClass = classNames(baseClass, 'text-orange-500');
     const inactiveClass = classNames(baseClass, 'text-neutral-100');
     return (
-      <header className="fixed top-0 z-50 hidden w-full bg-neutral-900/50 p-4 backdrop-blur sm:block" id={headerID}>
+      <header className="fixed top-0 z-50 hidden w-full bg-transparent backdrop-blur-sm p-4 sm:block" id={headerID}>
         <nav className="flex justify-center gap-x-8">
           {navSections.map(section => (
             <NavItem
@@ -126,11 +126,17 @@ const NavItem: FC<{
 }> = memo(({section, current, inactiveClass, activeClass, onClick}) => {
   return (
     <Link
-      className={classNames(current ? activeClass : inactiveClass)}
+      className="relative group cursor-pointer px-2 py-1"
       href={`/#${section}`}
       key={section}
       onClick={onClick}>
-      {section}
+      <span className={classNames(
+        current ? activeClass : inactiveClass,
+        "capitalize"
+      )}>{section}</span>
+      <span
+        className="absolute left-0 bottom-0 h-[2px] w-0 bg-orange-500 transition-all duration-500 group-hover:w-full"
+      ></span>
     </Link>
   );
 });

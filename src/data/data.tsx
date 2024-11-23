@@ -9,12 +9,13 @@ import InstagramIcon from '../components/Icon/InstagramIcon';
 import LinkedInIcon from '../components/Icon/LinkedInIcon';
 import TwitterIcon from '../components/Icon/TwitterIcon';
 
-import heroImage from '../images/background-2.jpg';
+import heroImage from '../images/flacon-9-td7.jpg';
 import porfolioImage2 from '../images/portfolio/joi.jpg';
 import porfolioImage3 from '../images/portfolio/uzchess-bots.jpg';
 import porfolioImage4 from '../images/portfolio/flappybird.png';
 import porfolioImage5 from '../images/portfolio/currecny-converter.png';
 import profilepic from '../images/profile-pic.jpg';
+import testimonialImage from '../images/background-2.jpg' 
 
 import {
   About,
@@ -246,7 +247,7 @@ export const experience: TimelineItem[] = [
  * Testimonial section
  */
 export const testimonial: TestimonialSection = {
-  imageSrc: heroImage,
+  imageSrc: testimonialImage,
   testimonials: [
     {
       name: 'John Doe',
