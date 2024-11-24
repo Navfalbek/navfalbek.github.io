@@ -125,18 +125,9 @@ const NavItem: FC<{
   onClick?: () => void;
 }> = memo(({section, current, inactiveClass, activeClass, onClick}) => {
   return (
-    <Link
-      className="relative group cursor-pointer px-2 py-1"
-      href={`/#${section}`}
-      key={section}
-      onClick={onClick}>
-      <span className={classNames(
-        current ? activeClass : inactiveClass,
-        "capitalize"
-      )}>{section}</span>
-      <span
-        className="absolute left-0 bottom-0 h-[2px] w-0 bg-orange-500 transition-all duration-500 group-hover:w-full"
-      ></span>
+    <Link className="relative group cursor-pointer px-2 py-1" href={`/#${section}`} key={section} onClick={onClick}>
+      <span className={classNames(current ? activeClass : inactiveClass, 'capitalize')}>{section}</span>
+      <span className="absolute left-0 bottom-0 h-[2px] w-0 bg-orange-500 transition-all duration-500 group-hover:w-full"></span>
     </Link>
   );
 });

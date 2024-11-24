@@ -1,5 +1,11 @@
 // eslint-disable-next-line simple-import-sort/imports
-import {ArrowDownTrayIcon, CalendarIcon, FlagIcon, MapIcon, SparklesIcon} from '@heroicons/react/24/outline';
+import {
+  ArrowDownTrayIcon,
+  BookOpenIcon,
+  CalendarIcon,
+  MapIcon,
+  SparklesIcon,
+} from '@heroicons/react/24/outline';
 
 // eslint-disable-next-line simple-import-sort/imports
 import {FaTelegramPlane} from 'react-icons/fa';
@@ -10,12 +16,13 @@ import LinkedInIcon from '../components/Icon/LinkedInIcon';
 import TwitterIcon from '../components/Icon/TwitterIcon';
 
 import heroImage from '../images/flacon-9-td7.jpg';
+import porfolioImage1 from '../images/portfolio/website.png'
 import porfolioImage2 from '../images/portfolio/joi.jpg';
 import porfolioImage3 from '../images/portfolio/uzchess-bots.jpg';
 import porfolioImage4 from '../images/portfolio/flappybird.png';
 import porfolioImage5 from '../images/portfolio/currecny-converter.png';
 import profilepic from '../images/profile-pic.jpg';
-import testimonialImage from '../images/background-2.jpg' 
+import testimonialImage from '../images/background-2.jpg';
 
 import {
   About,
@@ -107,11 +114,11 @@ const currentAge =
  */
 export const aboutData: About = {
   profileImageSrc: profilepic,
-  description: `Hello Crew! I'm Navfal Makhfuzullaev a senior student at Inha University in Tashkent`,
+  description: `Hello Crew! I'm Navfal Makhfuzullaev a senior student at Inha University in Tashkent, with a huge interset in Space and Nebula's (origin of birth of the Stars). Another fiekds that I'am interested in are Machine Learning and Quantum computing. I'm an open-minded extrovert person always ready to new journeys. Also, really love paino and violin.`,
   aboutItems: [
     {label: 'Location', text: 'Uzbekistan, Fergana', Icon: MapIcon},
     {label: 'Age', text: `${currentAge}`, Icon: CalendarIcon},
-    {label: 'Nationality', text: 'Uzbek', Icon: FlagIcon},
+    {label: 'Currently doing', text: `Preparing to pursue my Masters degree in Computer Science`, Icon: BookOpenIcon},
     {label: 'Interests', text: 'Space, Piano, Hiking, Traveling', Icon: SparklesIcon},
     //   {label: 'Study', text: (
     //       <a
@@ -159,9 +166,9 @@ export const portfolioItems: PortfolioItem[] = [
   },
   {
     title: 'My personal website',
-    description: 'Give a short description of your project here.',
-    url: 'https://reactresume.com',
-    image: porfolioImage2,
+    description: 'Personal resume website.',
+    url: 'https://github.com/Navfalbek/navfalbek.github.io',
+    image: porfolioImage1,
   },
   {
     title: 'UzChess Bots',
