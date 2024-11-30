@@ -114,7 +114,7 @@ const currentAge =
  */
 export const aboutData: About = {
   profileImageSrc: profilepic,
-  description: `Hello Crew! I'm Navfal Makhfuzullaev a senior student at Inha University in Tashkent, with a huge interset in Space and Nebula's (origin of birth of the Stars). Another fiekds that I'am interested in are Machine Learning and Quantum computing. I'm an open-minded extrovert person always ready to new journeys. Also, really love paino and violin.`,
+  description: `Hello Crew! I'm Navfal Makhfuzullaev a senior student at Inha University in Tashkent, with a huge interset in Space and Nebula's (origin of birth of the Stars). Another fields that I'am interested in are Machine Learning and Quantum computing. I'm an open-minded extrovert person always ready to new journeys. Also, really love paino and violin.`,
   aboutItems: [
     {label: 'Location', text: 'Uzbekistan, Fergana', Icon: MapIcon},
     {label: 'Age', text: `${currentAge}`, Icon: CalendarIcon},
@@ -257,19 +257,14 @@ export const testimonial: TestimonialSection = {
   imageSrc: testimonialImage,
   testimonials: [
     {
-      name: 'John Doe',
-      text: 'Use this as an opportunity to promote what it is like to work with you. High value testimonials include ones from current or past co-workers, managers, or from happy clients.',
-      image: 'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/169.jpg',
+      name: 'Shokhrukh Rustamov',
+      text: 'Navfal is a great partner to work with. We worked with him in several projects in the university, and he always was the one of the most active students contributed to the project. He is responsible and has a strict disciple.',
+      image: '',
     },
     {
-      name: 'Jane Doe',
-      text: 'Here you should write some nice things that someone has said about you. Encourage them to be specific and include important details (notes about a project you were on together, impressive quality produced, etc).',
-      image: 'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/14.jpg',
-    },
-    {
-      name: 'Someone else',
-      text: 'Add several of these, and keep them as fresh as possible, but be sure to focus on quality testimonials with strong highlights of your skills/work ethic.',
-      image: 'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/69.jpg',
+      name: 'Elbek Davron',
+      text: 'Navfal is an incredibly curious individual who approaches every goal with determination and persistence.',
+      image: '',
     },
   ],
 };
@@ -280,7 +275,7 @@ export const testimonial: TestimonialSection = {
 
 export const contact: ContactSection = {
   headerText: 'Get in touch.',
-  description: 'Here is a good spot for a message to your readers to let them know how best to reach out to you.',
+  description: 'Feel free to send me a message regarding any business inquiries. Here are some ways to reach me:',
   items: [
     {
       type: ContactType.Email,

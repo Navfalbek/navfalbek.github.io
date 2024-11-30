@@ -1,3 +1,4 @@
+import emailjs from 'emailjs-com';
 import {FC, memo, useCallback, useMemo, useState} from 'react';
 
 interface FormData {
@@ -7,6 +8,10 @@ interface FormData {
 }
 
 const ContactForm: FC = memo(() => {
+  const userId = process.env.NEXT_PUBLIC_EMAILJS_USER_ID as string;
+  const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID as string;
+  const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID as string;
+
   const defaultData = useMemo(
     () => ({
       name: '',
@@ -17,6 +22,11 @@ const ContactForm: FC = memo(() => {
   );
 
   const [data, setData] = useState<FormData>(defaultData);
+
+  const validateEmail = (email: string) => {
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return regex.test(email);
+  }
 
   const onChange = useCallback(
     <T extends HTMLInputElement | HTMLTextAreaElement>(event: React.ChangeEvent<T>): void => {
@@ -32,12 +42,36 @@ const ContactForm: FC = memo(() => {
   const handleSendMessage = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      /**
-       * This is a good starting point to wire up your form submission logic
-       * */
-      console.log('Data to send: ', data);
+
+      if (!validateEmail) {
+        alert('Please enter a valid email address.');
+        return;
+      }
+      
+      emailjs.init(userId);
+
+      try {
+        const response = await emailjs.send(
+          `${serviceId}`,
+          `${templateId}`,
+          {
+            from_name: data.name,
+            from_email: data.email,
+            message: data.message,
+          },
+          `${userId}`,
+        );
+
+        console.log('Success:', response);
+        alert('Message sent successfully!');
+
+        setData(defaultData);
+      } catch (error) {
+        console.error('Failed to send email:', error);
+        alert('Failed to send message. Please try again.');
+      }
     },
-    [data],
+    [data, defaultData, serviceId, templateId, userId],
   );
 
   const inputClasses =
