@@ -114,7 +114,7 @@ const currentAge =
  */
 export const aboutData: About = {
   profileImageSrc: profilepic,
-  description: `Hello Crew! I'm Navfal Makhfuzullaev a senior student at Inha University in Tashkent, with a huge interset in Space and Nebula's (origin of birth of the Stars). Another fields that I'am interested in are Machine Learning and Quantum computing. I'm an open-minded extrovert person always ready to new journeys. Also, really love paino and violin.`,
+  description: `Hello Crew! I'm Navfal Makhfuzullaev a senior student at Inha University in Tashkent, with a huge interest in Space and Nebula's (origin of birth of the Stars). Another fields that I'm interested in are Machine Learning and Quantum computing. I'm an open-minded extrovert person always ready to new journeys. Also, really love paino and violin.`,
   aboutItems: [
     {label: 'Location', text: 'Uzbekistan, Fergana', Icon: MapIcon},
     {label: 'Age', text: `${currentAge}`, Icon: CalendarIcon},
