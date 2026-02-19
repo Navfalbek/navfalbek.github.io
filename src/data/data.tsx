@@ -21,6 +21,7 @@ import porfolioImage2 from '../images/portfolio/joi.jpg';
 import porfolioImage3 from '../images/portfolio/uzchess-bots.jpg';
 import porfolioImage4 from '../images/portfolio/flappybird.png';
 import porfolioImage5 from '../images/portfolio/currecny-converter.png';
+import porfolioImage6 from '../images/portfolio/study-work-DaD.png';
 import profilepic from '../images/profile-pic.jpg';
 import testimonialImage from '../images/background-2.jpg';
 
@@ -148,7 +149,7 @@ export const skills: SkillGroup[] = [
   {
     text: (
       <p>
-        <b style={{fontWeight: '700'}}>Developer Tools:</b> Git, Visual Studio, PyCharm, Linux, LateX, Tableau
+        <b style={{fontWeight: '700'}}>Developer Tools:</b> Git, Visual Studio, PyCharm, DataGrip, Linux, LateX, Tableau
       </p>
     ),
   },
@@ -188,6 +189,12 @@ export const portfolioItems: PortfolioItem[] = [
     url: 'https://github.com/Navfalbek/currency-converter',
     image: porfolioImage5,
   },
+  {
+    title: 'Innovations in Air Quality Management: A Comprehensive Study',
+    description: 'Objective: Our study aims to yield valuable insights into the current landscape of air quality management, with a particular focus on forecasting methodologies. By critically analyzing existing literature and research findings, we seek to elucidate both established practices and emerging trends in this dynamic field. Through a rigorous examination of state-of-the-art developments in air quality modeling, data assimilation, and machine learning techniques, we aspire to paint a comprehensive picture of the tools and techniques at the forefront of air quality forecasting.',
+    url: 'https://drive.google.com/file/d/10JwOjHy8pQwWt4sIfuqaJvIqUXq1UY9c/view?usp=sharing',
+    image: porfolioImage6,
+  },
 ];
 
 /**
@@ -200,11 +207,26 @@ export const education: TimelineItem[] = [
     title: 'Inha University in Tashkent',
     content: (
       <>
-        <strong style={{fontWeight: '700'}}>Bachelor of Science in Information and Communicatio Engineering</strong>
+        <strong style={{fontWeight: '700'}}>Bachelor of Science in Information and Communication Engineering</strong>
         <p>
           <i style={{fontWeight: '500'}}>Activities: </i>Inha University (Korea) Summer School program, Lecturer and
           Instructor at Continuing Education Center. Assistant at Student Support Center. Volunter at Google Developers
           Group Tashkent. Huawei MECA Seeds for the Future.
+        </p>
+      </>
+    ),
+  },
+  {
+    date: 'Feb 2025 - July 2025',
+    location: 'Zilina, Slovakia',
+    title: 'University of Zilina',
+    content: (
+      <>
+        <strong style={{fontWeight: '700'}}>Bachelor of Engg. in Electrical Engineering and Information Technologies (Exchange Semester)</strong>
+        <p>
+          <i style={{fontWeight: '450'}}>Exchange program under the National Scholarship Programme of the Slovak Republic.</i> 
+          <br />
+          <i style={{fontWeight: '500'}}>Courses taken: </i> Multimedia Signals Distribution, Internet of Things, Biomedical Image Processing, Robotic Systems, Control Systems
         </p>
       </>
     ),
