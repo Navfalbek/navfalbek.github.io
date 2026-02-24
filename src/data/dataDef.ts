@@ -1,5 +1,5 @@
 import {StaticImageData} from 'next/image';
-import React, {FC, ForwardRefExoticComponent, ReactNode, SVGProps} from 'react';
+import React, {FC, ForwardRefExoticComponent, SVGProps} from 'react';
 
 import {IconProps} from '../components/Icon/Icon';
 
