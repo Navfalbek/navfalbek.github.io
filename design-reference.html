@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Navfal Makhfuzullaev — Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{background:#04060e;color:#e8ecf5;font-family:'Space Grotesk',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+    ::selection{background:rgba(95,217,255,0.3);color:#fff;}
+
+    @keyframes drift1{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(8%,5%) scale(1.18);}}
+    @keyframes drift2{0%,100%{transform:translate(0,0) scale(1.1);}50%{transform:translate(-7%,-4%) scale(0.92);}}
+    @keyframes drift3{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(5%,-6%) scale(1.2);}}
+    @keyframes drift4{0%,100%{transform:translate(0,0) scale(0.95);}50%{transform:translate(-6%,6%) scale(1.12);}}
+    @keyframes bob{0%,100%{transform:translateX(-50%) translateY(0);opacity:0.7;}50%{transform:translateX(-50%) translateY(8px);opacity:1;}}
+    @keyframes floaty{0%,100%{transform:translateY(0);}50%{transform:translateY(-18px);}}
+
+    .wrapper{
+      position:relative;min-height:100vh;
+      background:radial-gradient(ellipse at 50% -10%,#0a1326 0%,#060a16 45%,#04060e 100%);
+      color:#e8ecf5;overflow-x:hidden;
+    }
+
+    /* Fixed background layers */
+    #galaxy-layer{position:fixed;inset:0;z-index:0;pointer-events:none;will-change:transform,opacity;}
+    #galaxy-canvas{position:absolute;inset:0;width:100%;height:100%;}
+    #nebula-layer{position:fixed;inset:0;z-index:0;opacity:0;pointer-events:none;will-change:transform,opacity;}
+    .blob{position:absolute;border-radius:50%;}
+    .blob1{top:-12%;left:-8%;width:58vw;height:58vw;background:radial-gradient(circle,rgba(70,190,255,0.42),rgba(70,190,255,0) 62%);filter:blur(50px);animation:drift1 28s ease-in-out infinite;}
+    .blob2{top:18%;right:-12%;width:60vw;height:60vw;background:radial-gradient(circle,rgba(150,110,255,0.4),rgba(150,110,255,0) 62%);filter:blur(55px);animation:drift2 34s ease-in-out infinite;}
+    .blob3{bottom:-15%;left:8%;width:64vw;height:64vw;background:radial-gradient(circle,rgba(255,90,180,0.28),rgba(255,90,180,0) 62%);filter:blur(60px);animation:drift3 40s ease-in-out infinite;}
+    .blob4{top:42%;left:30%;width:46vw;height:46vw;background:radial-gradient(circle,rgba(60,255,210,0.22),rgba(60,255,210,0) 62%);filter:blur(50px);animation:drift4 32s ease-in-out infinite;}
+    #star-canvas{position:fixed;inset:0;z-index:1;pointer-events:none;}
+    .vignette{position:fixed;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,rgba(4,6,14,0) 35%,rgba(4,6,14,0.55) 100%);}
+
+    /* Nav */
+    nav{
+      position:fixed;top:0;left:0;right:0;z-index:100;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:16px 5vw;
+      background:linear-gradient(180deg,rgba(5,8,18,0.92),rgba(5,8,18,0.15));
+      backdrop-filter:blur(12px);
+      border-bottom:1px solid rgba(120,160,255,0.12);
+    }
+    .nav-logo{display:flex;align-items:center;gap:11px;background:none;border:none;cursor:pointer;padding:0;}
+    .nav-dot{width:11px;height:11px;border-radius:50%;background:radial-gradient(circle at 32% 30%,#bdf0ff,#3a7bff);box-shadow:0 0 14px #5fd9ff;display:block;flex-shrink:0;}
+    .nav-wordmark{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:16px;letter-spacing:0.06em;color:#eaf0ff;}
+    .nav-wordmark em{font-style:normal;color:#5fd9ff;}
+    .nav-links{display:flex;gap:4px;align-items:center;}
+    .nav-btn{background:none;border:none;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.12em;color:#a9b6d4;padding:8px 12px;border-radius:8px;transition:color .2s,background .2s;}
+    .nav-btn:hover{color:#5fd9ff;background:rgba(95,217,255,0.08);}
+    #scroll-bar{position:absolute;left:0;bottom:-1px;height:2px;width:0%;background:linear-gradient(90deg,#5fd9ff,#a87bff);box-shadow:0 0 8px rgba(95,217,255,0.6);}
+
+    /* Dot rail */
+    .dot-rail{position:fixed;right:24px;top:50%;transform:translateY(-50%);z-index:90;display:flex;flex-direction:column;gap:15px;align-items:center;}
+    .rail-dot{width:9px;height:9px;border-radius:50%;border:none;cursor:pointer;padding:0;background:rgba(150,180,255,0.25);transition:transform .3s,background .3s,box-shadow .3s;}
+    .rail-dot.active{background:#5fd9ff;transform:scale(1.7);box-shadow:0 0 12px #5fd9ff;}
+
+    /* Hero */
+    #home{position:relative;z-index:5;min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:120px 6vw 90px;}
+    .planet-lg{position:absolute;top:18%;right:14%;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 30% 28%,#6fd2ff,#234a9e 55%,#0e1f44);box-shadow:0 0 70px rgba(80,160,255,0.45),inset -14px -10px 30px rgba(0,0,0,0.5);animation:floaty 9s ease-in-out infinite;opacity:0.85;}
+    .planet-sm{position:absolute;bottom:20%;left:11%;width:64px;height:64px;border-radius:50%;background:radial-gradient(circle at 34% 30%,#d3a6ff,#5b3aa0 60%,#1d1140);box-shadow:0 0 44px rgba(160,110,255,0.4);animation:floaty 11s ease-in-out infinite 1.5s;opacity:0.8;}
+    .eyebrow{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.42em;color:#5fd9ff;margin-bottom:26px;}
+    h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(46px,9vw,116px);line-height:0.98;letter-spacing:-0.025em;background:linear-gradient(118deg,#ffffff,#9fd8ff 42%,#b69bff);-webkit-background-clip:text;background-clip:text;color:transparent;max-width:14ch;}
+    .hero-sub{font-family:'JetBrains Mono',monospace;font-size:clamp(13px,1.6vw,16px);letter-spacing:0.22em;color:#cdd8f2;margin-top:26px;text-transform:uppercase;}
+    .hero-desc{max-width:60ch;margin-top:24px;font-size:clamp(15px,1.8vw,18px);line-height:1.7;color:#9fadcb;}
+    .hero-links{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:38px;}
+    .pill-link{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.16em;padding:12px 20px;border:1px solid rgba(120,160,255,0.28);border-radius:40px;color:#dfe8ff;text-decoration:none;background:rgba(20,32,58,0.4);transition:all .25s;}
+    .pill-link:hover{border-color:#5fd9ff;color:#5fd9ff;background:rgba(40,80,140,0.35);transform:translateY(-2px);}
+    .scroll-hint{position:absolute;bottom:34px;left:50%;display:flex;flex-direction:column;align-items:center;gap:10px;animation:bob 2.4s ease-in-out infinite;}
+    .scroll-hint-text{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.3em;color:#7e8cae;}
+    .scroll-arrow{width:11px;height:11px;border-right:1.5px solid #5fd9ff;border-bottom:1.5px solid #5fd9ff;transform:rotate(45deg);display:block;}
+
+    /* Shared section styles */
+    .section-label{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.34em;margin-bottom:14px;}
+    .section-h2{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(30px,4.6vw,52px);letter-spacing:-0.02em;line-height:1.05;color:#f2f6ff;}
+    .glass{background:rgba(11,17,33,0.55);backdrop-filter:blur(8px);border:1px solid rgba(120,160,255,0.14);border-radius:16px;}
+
+    /* About */
+    #about{position:relative;z-index:5;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:130px 6vw;max-width:1180px;margin:0 auto;}
+    #about .section-label{color:#5fd9ff;}
+    #about .section-h2{margin-bottom:36px;}
+    .about-grid{display:grid;grid-template-columns:1.55fr 1fr;gap:30px;align-items:start;}
+    .about-bio{padding:32px 34px;}
+    .about-bio p{font-size:clamp(15px,1.8vw,18px);line-height:1.85;color:#c7d2ec;}
+    .about-bio p+p{margin-top:18px;}
+    .about-bio strong{color:#fff;font-weight:600;}
+    .facts{display:flex;flex-direction:column;gap:12px;}
+    .fact{background:rgba(11,17,33,0.55);backdrop-filter:blur(8px);border:1px solid rgba(120,160,255,0.14);border-radius:14px;padding:16px 20px;}
+    .fact-l{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.24em;color:#5fd9ff;text-transform:uppercase;margin-bottom:6px;}
+    .fact-v{font-size:16px;color:#eaf0ff;font-weight:500;}
+
+    /* Resume */
+    #resume{position:relative;z-index:5;min-height:100vh;padding:130px 6vw;max-width:1180px;margin:0 auto;}
+    #resume .section-label{color:#a87bff;}
+    #resume .section-h2{margin-bottom:44px;}
+    .resume-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;}
+    .col-title{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:26px;}
+    .col-title.blue{color:#5fd9ff;}
+    .col-title.purple{color:#a87bff;}
+    .tl-item{position:relative;padding-left:26px;padding-bottom:30px;}
+    .tl-item.blue{border-left:1px solid rgba(120,160,255,0.22);}
+    .tl-item.purple{border-left:1px solid rgba(160,120,255,0.22);}
+    .tl-dot{position:absolute;left:-5.5px;top:5px;width:10px;height:10px;border-radius:50%;display:block;}
+    .tl-dot.blue{background:#5fd9ff;box-shadow:0 0 12px #5fd9ff;}
+    .tl-dot.purple{background:#a87bff;box-shadow:0 0 12px #a87bff;}
+    .tl-date{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.1em;color:#8ea0c8;}
+    .tl-title{font-size:17px;font-weight:600;color:#f2f6ff;margin:6px 0 3px;}
+    .tl-org{font-size:14px;color:#9fb0d4;margin-bottom:10px;}
+    .tl-detail{font-size:13.5px;line-height:1.7;color:#8895b6;}
+    .tl-pts{list-style:none;display:flex;flex-direction:column;gap:7px;}
+    .tl-pt{position:relative;padding-left:16px;font-size:13.5px;line-height:1.65;color:#8895b6;}
+    .tl-pt::before{content:'';position:absolute;left:0;top:8px;width:4px;height:4px;border-radius:50%;background:#a87bff;display:block;}
+    .skills-h{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.2em;color:#5fd9ff;text-transform:uppercase;margin:18px 0 18px;}
+    .tags{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:14px;}
+    .tag{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.04em;padding:8px 14px;border-radius:8px;}
+    .tag.s{border:1px solid rgba(95,217,255,0.25);background:rgba(95,217,255,0.07);color:#cfe6ff;}
+    .tag.t{border:1px solid rgba(168,123,255,0.25);background:rgba(168,123,255,0.07);color:#e0d3ff;}
+
+    /* Portfolio */
+    #portfolio{position:relative;z-index:5;min-height:100vh;padding:130px 6vw;max-width:1180px;margin:0 auto;}
+    #portfolio .section-label{color:#ff7ac4;}
+    #portfolio .section-h2{margin-bottom:14px;}
+    .port-note{font-size:14px;color:#8895b6;font-family:'JetBrains Mono',monospace;letter-spacing:0.06em;margin-bottom:40px;}
+    .projects{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:22px;}
+    .proj{position:relative;border-radius:16px;overflow:hidden;border:1px solid rgba(120,160,255,0.16);background:rgba(10,14,28,0.55);aspect-ratio:16/11;}
+    .proj-bg{position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(120,160,255,0.05) 0 13px,rgba(120,160,255,0.12) 13px 26px);display:flex;align-items:center;justify-content:center;}
+    .proj-bg span{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.22em;color:rgba(180,205,255,0.45);}
+    .proj-foot{position:absolute;left:0;right:0;bottom:0;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:linear-gradient(0deg,rgba(5,8,18,0.94),rgba(5,8,18,0));}
+    .proj-name{font-family:'Space Grotesk',sans-serif;font-weight:600;color:#eaf0ff;font-size:15px;}
+    .proj-tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.14em;color:#5fd9ff;white-space:nowrap;}
+    .proj-over{position:absolute;inset:0;padding:24px;display:flex;flex-direction:column;justify-content:center;gap:12px;background:linear-gradient(140deg,rgba(18,42,84,0.94),rgba(48,22,78,0.94));opacity:0;transition:opacity .35s ease;}
+    .proj:hover .proj-over{opacity:1;}
+    .proj-over-name{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:19px;color:#fff;}
+    .proj-over-desc{font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.65;color:#cfe0ff;}
+    .proj-over-tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.18em;color:#7fdcff;margin-top:4px;}
+
+    /* Testimonials */
+    #testimonials{position:relative;z-index:5;min-height:90vh;padding:130px 6vw;max-width:1180px;margin:0 auto;display:flex;flex-direction:column;justify-content:center;}
+    #testimonials .section-label{color:#5fd9ff;}
+    #testimonials .section-h2{margin-bottom:10px;}
+    .test-note{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;color:#6f7d9e;margin-bottom:40px;}
+    .test-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px;}
+    .test-card{background:rgba(11,17,33,0.55);backdrop-filter:blur(8px);border:1px solid rgba(120,160,255,0.14);border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:18px;}
+    .test-qmark{font-family:'Space Grotesk',sans-serif;font-size:48px;line-height:0.6;color:rgba(95,217,255,0.4);}
+    .test-q{font-size:15px;line-height:1.75;color:#c0cbe6;font-style:italic;}
+    .test-author{display:flex;align-items:center;gap:12px;margin-top:auto;}
+    .test-avatar{width:38px;height:38px;border-radius:50%;background:radial-gradient(circle at 32% 30%,#6fd2ff,#5b3aa0);flex-shrink:0;}
+    .test-name{font-size:14px;font-weight:600;color:#eaf0ff;}
+    .test-role{font-family:'JetBrains Mono',monospace;font-size:11px;color:#8895b6;}
+
+    /* Contact */
+    #contact{position:relative;z-index:5;min-height:80vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:130px 6vw 70px;}
+    #contact .section-label{color:#a87bff;margin-bottom:16px;}
+    .contact-h2{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(34px,5.5vw,68px);letter-spacing:-0.025em;line-height:1.02;background:linear-gradient(118deg,#ffffff,#9fd8ff 42%,#b69bff);-webkit-background-clip:text;background-clip:text;color:transparent;max-width:16ch;}
+    .contact-desc{max-width:54ch;margin-top:22px;font-size:clamp(15px,1.8vw,18px);line-height:1.7;color:#9fadcb;}
+    .contact-email{font-family:'JetBrains Mono',monospace;font-size:clamp(16px,2.4vw,24px);letter-spacing:0.06em;color:#5fd9ff;text-decoration:none;margin-top:30px;border-bottom:1px solid rgba(95,217,255,0.4);padding-bottom:4px;transition:color .2s;}
+    .contact-email:hover{color:#9fe6ff;}
+    .contact-links{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:36px;}
+    .contact-pill{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.16em;padding:12px 20px;border:1px solid rgba(120,160,255,0.28);border-radius:40px;color:#dfe8ff;text-decoration:none;background:rgba(20,32,58,0.4);transition:all .25s;}
+    .contact-pill:hover{border-color:#a87bff;color:#cbb6ff;background:rgba(60,40,110,0.4);transform:translateY(-2px);}
+
+    /* Footer */
+    footer{position:relative;z-index:5;border-top:1px solid rgba(120,160,255,0.12);padding:30px 6vw;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;background:rgba(5,8,18,0.5);}
+    .footer-brand{display:flex;align-items:center;gap:10px;}
+    .footer-dot{width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 32% 30%,#bdf0ff,#3a7bff);box-shadow:0 0 10px #5fd9ff;display:block;}
+    .footer-label{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.1em;color:#8895b6;}
+    .footer-copy{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.08em;color:#6f7d9e;}
+    .footer-btn{background:none;border:1px solid rgba(120,160,255,0.25);border-radius:40px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;color:#cdd8f2;padding:9px 16px;transition:all .2s;}
+    .footer-btn:hover{border-color:#5fd9ff;color:#5fd9ff;}
+
+    @media(max-width:768px){
+      .about-grid,.resume-grid{grid-template-columns:1fr;gap:24px;}
+      .nav-links,.dot-rail{display:none;}
+      .planet-lg{width:72px;height:72px;right:4%;}
+      .planet-sm{width:44px;height:44px;left:4%;}
+    }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div id="galaxy-layer"><canvas id="galaxy-canvas"></canvas></div>
+
+  <div id="nebula-layer">
+    <div class="blob blob1"></div>
+    <div class="blob blob2"></div>
+    <div class="blob blob3"></div>
+    <div class="blob blob4"></div>
+  </div>
+
+  <canvas id="star-canvas"></canvas>
+  <div class="vignette"></div>
+
+  <!-- NAV -->
+  <nav>
+    <button class="nav-logo" onclick="navTop()">
+      <span class="nav-dot"></span>
+      <span class="nav-wordmark">NAVFAL<em>.M</em></span>
+    </button>
+    <div class="nav-links">
+      <button class="nav-btn" onclick="navTo('about')">About</button>
+      <button class="nav-btn" onclick="navTo('resume')">Resume</button>
+      <button class="nav-btn" onclick="navTo('portfolio')">Portfolio</button>
+      <button class="nav-btn" onclick="navTo('testimonials')">Testimonials</button>
+      <button class="nav-btn" onclick="navTo('contact')">Contact</button>
+    </div>
+    <div id="scroll-bar"></div>
+  </nav>
+
+  <!-- DOT RAIL -->
+  <div class="dot-rail">
+    <button class="rail-dot" title="About" onclick="navTo('about')"></button>
+    <button class="rail-dot" title="Resume" onclick="navTo('resume')"></button>
+    <button class="rail-dot" title="Portfolio" onclick="navTo('portfolio')"></button>
+    <button class="rail-dot" title="Testimonials" onclick="navTo('testimonials')"></button>
+    <button class="rail-dot" title="Contact" onclick="navTo('contact')"></button>
+  </div>
+
+  <!-- HERO -->
+  <section id="home">
+    <div class="planet-lg"></div>
+    <div class="planet-sm"></div>
+    <div class="eyebrow">// WELCOME, CREW</div>
+    <h1>Navfal Makhfuzullaev</h1>
+    <div class="hero-sub">Data Analyst · Machine&nbsp;Learning · Space&nbsp;Enthusiast</div>
+    <p class="hero-desc">Computer Science graduate charting a course through machine learning and data — with a lifelong fascination for the nebulae where stars are born.</p>
+    <div class="hero-links">
+      <a href="mailto:navfalbek.uz@gmail.com" class="pill-link">EMAIL ↗</a>
+      <a href="https://www.linkedin.com/in/navfalbek/" target="_blank" rel="noopener" class="pill-link">LINKEDIN ↗</a>
+      <a href="https://www.instagram.com/navfalbek.m/" target="_blank" rel="noopener" class="pill-link">INSTAGRAM ↗</a>
+      <a href="https://x.com/mnavfalbek" target="_blank" rel="noopener" class="pill-link">X ↗</a>
+    </div>
+    <div class="scroll-hint">
+      <span class="scroll-hint-text">SCROLL TO BEGIN THE JOURNEY</span>
+      <span class="scroll-arrow"></span>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-label">01 / ABOUT — ENTERING THE NEBULA</div>
+    <h2 class="section-h2">Where the stars are born</h2>
+    <div class="about-grid">
+      <div class="glass about-bio">
+        <p>Hello, crew. I'm <strong>Navfal Makhfuzullaev</strong> — a Computer Science graduate from Inha University in Tashkent, drawn to the physics of space and to nebulae, the clouds of gas where stars first take shape.</p>
+        <p>My work lives at the intersection of machine learning, data, and a long-running curiosity about quantum computing. I'm an open, outward-looking person — always ready for the next journey — and when I step away from the keyboard you'll usually find me at a piano or a violin.</p>
+      </div>
+      <div class="facts">
+        <div class="fact"><div class="fact-l">Location</div><div class="fact-v">Fergana, Uzbekistan</div></div>
+        <div class="fact"><div class="fact-l">Age</div><div class="fact-v">22</div></div>
+        <div class="fact"><div class="fact-l">Currently</div><div class="fact-v">Preparing for an M.Sc. in Computer Science</div></div>
+        <div class="fact"><div class="fact-l">Interests</div><div class="fact-v">Space · Piano · Hiking · Traveling</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESUME -->
+  <section id="resume">
+    <div class="section-label">02 / RESUME — DEEPER INTO THE CLOUD</div>
+    <h2 class="section-h2">Trajectory</h2>
+    <div class="resume-grid">
+      <div>
+        <h3 class="col-title blue">Education</h3>
+        <div class="tl-item blue">
+          <span class="tl-dot blue"></span>
+          <div class="tl-date">Sep 2021 — May 2025</div>
+          <div class="tl-title">B.Sc. in Information &amp; Communication Engineering</div>
+          <div class="tl-org">Inha University in Tashkent · Tashkent, Uzbekistan</div>
+          <div class="tl-detail">Inha University (Korea) Summer School · Lecturer &amp; Instructor, Continuing Education Center · Assistant, Student Support Center · Volunteer, Google Developers Group Tashkent · Huawei MECA Seeds for the Future.</div>
+        </div>
+        <div class="tl-item blue">
+          <span class="tl-dot blue"></span>
+          <div class="tl-date">Feb 2025 — Jul 2025</div>
+          <div class="tl-title">B.Eng. in Electrical Engineering &amp; IT — Exchange</div>
+          <div class="tl-org">University of Žilina · Žilina, Slovakia</div>
+          <div class="tl-detail">National Scholarship Programme of the Slovak Republic. Courses: Multimedia Signals Distribution, IoT, Biomedical Image Processing, Robotic Systems, Control Systems.</div>
+        </div>
+      </div>
+      <div>
+        <h3 class="col-title purple">Experience</h3>
+        <div class="tl-item purple">
+          <span class="tl-dot purple"></span>
+          <div class="tl-date">2025 — Present</div>
+          <div class="tl-title">Data Analyst</div>
+          <div class="tl-org">National Statistics Committee of Uzbekistan</div>
+          <ul class="tl-pts">
+            <li class="tl-pt">Working with national-scale datasets to support statistical analysis and reporting.</li>
+          </ul>
+        </div>
+        <div class="tl-item purple">
+          <span class="tl-dot purple"></span>
+          <div class="tl-date">Jun 2024 — Aug 2024</div>
+          <div class="tl-title">Software Engineer Intern</div>
+          <div class="tl-org">GlobalMove — UzChess Academy</div>
+          <ul class="tl-pts">
+            <li class="tl-pt">Built 15+ chess bots emulating Grandmasters from lichess.org and chess.com game data.</li>
+            <li class="tl-pt">Developed engine opening books for integration with chess engines.</li>
+            <li class="tl-pt">Parsed FEN→PGN and added 21,000+ puzzles to the UzChess platform.</li>
+          </ul>
+        </div>
+        <div class="tl-item purple">
+          <span class="tl-dot purple"></span>
+          <div class="tl-date">Feb 2024 — May 2024</div>
+          <div class="tl-title">ML Engineer Intern</div>
+          <div class="tl-org">Mutolaa</div>
+          <ul class="tl-pts">
+            <li class="tl-pt">Built Uzbek TTS by voice-synthesizing voice actors (Appleo + OpenAI API) to cut audiobook production time.</li>
+            <li class="tl-pt">Cleaned noisy raw audio data to make it trainable for voice synthesis.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <h3 class="skills-h">Skills &amp; Tools</h3>
+    <div class="tags">
+      <span class="tag s">Python</span><span class="tag s">Machine Learning</span><span class="tag s">Deep Learning</span>
+      <span class="tag s">TensorFlow</span><span class="tag s">Scikit-learn</span><span class="tag s">OpenCV</span>
+      <span class="tag s">NumPy</span><span class="tag s">Pandas</span><span class="tag s">SciPy</span>
+      <span class="tag s">Matplotlib</span><span class="tag s">MySQL</span><span class="tag s">PostgreSQL</span>
+    </div>
+    <div class="tags">
+      <span class="tag t">Git</span><span class="tag t">Visual Studio</span><span class="tag t">PyCharm</span>
+      <span class="tag t">DataGrip</span><span class="tag t">Linux</span><span class="tag t">LaTeX</span><span class="tag t">Tableau</span>
+    </div>
+  </section>
+
+  <!-- PORTFOLIO -->
+  <section id="portfolio">
+    <div class="section-label">03 / PORTFOLIO — INSIDE THE GASES</div>
+    <h2 class="section-h2">Things I've built</h2>
+    <p class="port-note">Hover a card to reveal the mission log.</p>
+    <div class="projects">
+
+      <div class="proj">
+        <div class="proj-bg"><span>PROJECT SCREENSHOT</span></div>
+        <div class="proj-foot"><span class="proj-name">Personal Assistant "Joi"</span><span class="proj-tag">PYTHON · VOICE</span></div>
+        <div class="proj-over">
+          <span class="proj-over-name">Personal Assistant "Joi"</span>
+          <span class="proj-over-desc">A lightweight personal voice assistant that handles everyday automations on your PC.</span>
+          <span class="proj-over-tag">PYTHON · VOICE</span>
+        </div>
+      </div>
+
+      <div class="proj">
+        <div class="proj-bg"><span>PROJECT SCREENSHOT</span></div>
+        <div class="proj-foot"><span class="proj-name">Personal Website</span><span class="proj-tag">WEB</span></div>
+        <div class="proj-over">
+          <span class="proj-over-name">Personal Website</span>
+          <span class="proj-over-desc">My personal résumé site — the origin point this very page grew from.</span>
+          <span class="proj-over-tag">WEB</span>
+        </div>
+      </div>
+
+      <div class="proj">
+        <div class="proj-bg"><span>PROJECT SCREENSHOT</span></div>
+        <div class="proj-foot"><span class="proj-name">UzChess Bots</span><span class="proj-tag">PYTHON · DATA</span></div>
+        <div class="proj-over">
+          <span class="proj-over-name">UzChess Bots</span>
+          <span class="proj-over-desc">Chess bots modeled on Uzbek Grandmasters, integrated into the UzChess platform.</span>
+          <span class="proj-over-tag">PYTHON · DATA</span>
+        </div>
+      </div>
+
+      <div class="proj">
+        <div class="proj-bg"><span>PROJECT SCREENSHOT</span></div>
+        <div class="proj-foot"><span class="proj-name">Flappy Bird — Deep RL</span><span class="proj-tag">TENSORFLOW · RL</span></div>
+        <div class="proj-over">
+          <span class="proj-over-name">Flappy Bird — Deep RL</span>
+          <span class="proj-over-desc">A Flappy Bird agent that learns to fly using a Deep Q-Learning network.</span>
+          <span class="proj-over-tag">TENSORFLOW · RL</span>
+        </div>
+      </div>
+
+      <div class="proj">
+        <div class="proj-bg"><span>PROJECT SCREENSHOT</span></div>
+        <div class="proj-foot"><span class="proj-name">Currency Converter</span><span class="proj-tag">APP · API</span></div>
+        <div class="proj-over">
+          <span class="proj-over-name">Currency Converter</span>
+          <span class="proj-over-desc">Real-time currency converter covering 180+ live exchange rates.</span>
+          <span class="proj-over-tag">APP · API</span>
+        </div>
+      </div>
+
+      <div class="proj">
+        <div class="proj-bg"><span>PROJECT SCREENSHOT</span></div>
+        <div class="proj-foot"><span class="proj-name">Air Quality Management</span><span class="proj-tag">RESEARCH · ML</span></div>
+        <div class="proj-over">
+          <span class="proj-over-name">Air Quality Management</span>
+          <span class="proj-over-desc">A comprehensive study of air-quality forecasting — modeling, data assimilation, and ML techniques.</span>
+          <span class="proj-over-tag">RESEARCH · ML</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section id="testimonials">
+    <div class="section-label">04 / TESTIMONIALS — SIGNALS FROM THE CREW</div>
+    <h2 class="section-h2">Words from collaborators</h2>
+    <p class="test-note">// PLACEHOLDER — REPLACE WITH REAL RECOMMENDATIONS</p>
+    <div class="test-grid">
+      <div class="test-card">
+        <span class="test-qmark">&ldquo;</span>
+        <p class="test-q">Add a recommendation here — a mentor, teammate, or colleague describing what it was like to work with you.</p>
+        <div class="test-author"><span class="test-avatar"></span><div><div class="test-name">Your reference</div><div class="test-role">Title · Company</div></div></div>
+      </div>
+      <div class="test-card">
+        <span class="test-qmark">&ldquo;</span>
+        <p class="test-q">A second short quote can sit here. Keep it focused on impact, collaboration, or a specific win.</p>
+        <div class="test-author"><span class="test-avatar"></span><div><div class="test-name">Your reference</div><div class="test-role">Title · Company</div></div></div>
+      </div>
+      <div class="test-card">
+        <span class="test-qmark">&ldquo;</span>
+        <p class="test-q">And a third. Three balanced cards read best — swap this copy for the real words when you have them.</p>
+        <div class="test-author"><span class="test-avatar"></span><div><div class="test-name">Your reference</div><div class="test-role">Title · Company</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="section-label">05 / CONTACT</div>
+    <h2 class="contact-h2">Let's connect across the universe</h2>
+    <p class="contact-desc">Open to data, machine learning, and research opportunities — and to good conversations about space.</p>
+    <a href="mailto:navfalbek.uz@gmail.com" class="contact-email">navfalbek.uz@gmail.com</a>
+    <div class="contact-links">
+      <a href="mailto:navfalbek.uz@gmail.com" class="contact-pill">EMAIL ↗</a>
+      <a href="https://www.linkedin.com/in/navfalbek/" target="_blank" rel="noopener" class="contact-pill">LINKEDIN ↗</a>
+      <a href="https://www.instagram.com/navfalbek.m/" target="_blank" rel="noopener" class="contact-pill">INSTAGRAM ↗</a>
+      <a href="https://x.com/mnavfalbek" target="_blank" rel="noopener" class="contact-pill">X ↗</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-brand">
+      <span class="footer-dot"></span>
+      <span class="footer-label">NAVFAL.M · END OF TRANSMISSION</span>
+    </div>
+    <span class="footer-copy">&copy; 2026 Navfal Makhfuzullaev — built among the stars</span>
+    <button class="footer-btn" onclick="navTop()">↑ BACK TO ORBIT</button>
+  </footer>
+
+</div>
+<script>
+// Navigation helpers
+function navTo(id) {
+  const el = document.getElementById(id);
+  if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 62, behavior: 'smooth' });
+}
+function navTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+// Scroll-driven scene updates
+const scrollBar = document.getElementById('scroll-bar');
+const galaxyLayer = document.getElementById('galaxy-layer');
+const nebulaLayer = document.getElementById('nebula-layer');
+const railDots = Array.from(document.querySelectorAll('.rail-dot'));
+const sectionIds = ['about','resume','portfolio','testimonials','contact'];
+
+function updateScene() {
+  const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+  const p = Math.min(1, Math.max(0, window.scrollY / max));
+
+  scrollBar.style.width = (p * 100).toFixed(2) + '%';
+
+  const g = Math.min(1, p / 0.34);
+  galaxyLayer.style.opacity = (1 - g * 0.95).toFixed(3);
+  galaxyLayer.style.transform = 'scale(' + (1 + g * 3.4).toFixed(3) + ')';
+
+  nebulaLayer.style.opacity = (Math.min(1, p / 0.30) * 0.62 + p * 0.22).toFixed(3);
+  nebulaLayer.style.transform = 'scale(' + (1 + p * 0.7).toFixed(3) + ')';
+
+  let act = -1;
+  for (let i = 0; i < sectionIds.length; i++) {
+    const el = document.getElementById(sectionIds[i]);
+    if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.42) act = i;
+  }
+  railDots.forEach((d, i) => {
+    if (i === act) d.classList.add('active');
+    else d.classList.remove('active');
+  });
+}
+window.addEventListener('scroll', updateScene, { passive: true });
+updateScene();
+
+// Starfield
+(function() {
+  const canvas = document.getElementById('star-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, cx, cy, dpr;
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = canvas.width = Math.floor(window.innerWidth * dpr);
+    H = canvas.height = Math.floor(window.innerHeight * dpr);
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+    cx = W / 2; cy = H / 2;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  const pal = ['180,235,255','160,200,255','205,185,255','255,238,225'];
+  const mk = () => ({ x: Math.random()*W-cx, y: Math.random()*H-cy, z: Math.random()*W, c: pal[Math.random()*pal.length|0] });
+  const stars = Array.from({length:520}, mk);
+  let vel = 0, lastY = window.scrollY;
+  window.addEventListener('scroll', () => { vel += window.scrollY - lastY; lastY = window.scrollY; }, { passive: true });
+  (function loop() {
+    ctx.clearRect(0,0,W,H);
+    const sp = W*0.0009 + Math.min(W*0.011, Math.abs(vel)*dpr*0.5);
+    for (const s of stars) {
+      const pz = s.z;
+      s.z -= sp;
+      if (s.z < 1) { s.x=Math.random()*W-cx; s.y=Math.random()*H-cy; s.z=W; s.c=pal[Math.random()*pal.length|0]; continue; }
+      const k = 1 - s.z/W;
+      ctx.strokeStyle = 'rgba('+s.c+','+(0.18+0.8*k).toFixed(2)+')';
+      ctx.lineWidth = Math.max(0.5, k*2.4*dpr);
+      ctx.beginPath();
+      ctx.moveTo((s.x/pz)*cx+cx, (s.y/pz)*cy+cy);
+      ctx.lineTo((s.x/s.z)*cx+cx, (s.y/s.z)*cy+cy);
+      ctx.stroke();
+    }
+    vel *= 0.9;
+    if (Math.abs(vel) < 0.01) vel = 0;
+    requestAnimationFrame(loop);
+  })();
+})();
+
+// Galaxy
+(function() {
+  const canvas = document.getElementById('galaxy-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, cx, cy, dpr, R;
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = canvas.width = Math.floor(window.innerWidth * dpr);
+    H = canvas.height = Math.floor(window.innerHeight * dpr);
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+    cx = W/2; cy = H*0.46; R = Math.max(W,H)*0.62;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const TWIST=4.6, INCL=0.42, TILT=-0.32;
+  const cosT=Math.cos(TILT), sinT=Math.sin(TILT);
+  const rnd=(a,b)=>a+Math.random()*(b-a);
+  const gauss=()=>(Math.random()+Math.random()+Math.random()-1.5)/1.5;
+
+  const arms=[
+    {off:0,main:true,w:1.3},{off:Math.PI,main:true,w:1.3},
+    {off:Math.PI*0.34,main:false,w:0.18},{off:Math.PI*0.66,main:false,w:0.18},
+    {off:Math.PI*1.02,main:false,w:0.18},{off:Math.PI*1.34,main:false,w:0.18},
+    {off:Math.PI*1.68,main:false,w:0.18},{off:Math.PI*0.5,main:false,w:0.18},
+    {off:Math.PI*1.5,main:false,w:0.18}
+  ];
+  let wSum=0; const wAcc=arms.map(a=>(wSum+=a.w));
+  const pickArm=()=>{ const x=Math.random()*wSum; for(let k=0;k<arms.length;k++) if(x<=wAcc[k]) return arms[k]; return arms[0]; };
+
+  const N = Math.round(520*4.4);
+  const pts = [];
+  for (let i=0;i<N;i++) {
+    const halo = Math.random()<0.10;
+    let r = halo ? Math.pow(Math.random(),0.6) : Math.pow(Math.random(),1.35);
+    const arm = pickArm();
+    if (!arm.main && !halo) r = 0.16+r*0.78;
+    const width = (arm.main?0.16:0.12)+0.14*(1-r);
+    const spread = halo ? rnd(-Math.PI,Math.PI) : gauss()*width;
+    const theta = arm.off+r*TWIST+spread;
+    let col;
+    if (r<0.16) col=[255,245,226];
+    else { const t=Math.random(); col=t<0.08?[255,150,190]:t<0.14?[255,196,140]:[180,212,255]; }
+    const dim = arm.main?1:0.5;
+    pts.push({
+      r, theta,
+      z: gauss()*0.02*(1-r)+(halo?gauss()*0.05:0),
+      col,
+      size: (r<0.2?rnd(0.5,1.3)*(0.6+0.7*(1-r/0.2)):rnd(0.4,1.5))*dpr*(arm.main?1:0.82),
+      a: (r<0.2?(0.24+0.36*(1-r/0.2))*rnd(0.8,1.05):rnd(0.25,0.85))*(halo?0.5:1)*dim,
+      tw: Math.random()*Math.PI*2,
+      tws: rnd(0.6,2.2)
+    });
+  }
+
+  const mkSpr=(r,g,b)=>{
+    const s=document.createElement('canvas'); s.width=s.height=128;
+    const sc=s.getContext('2d');
+    const gd=sc.createRadialGradient(64,64,0,64,64,64);
+    gd.addColorStop(0,'rgba('+r+','+g+','+b+',0.85)');
+    gd.addColorStop(0.45,'rgba('+r+','+g+','+b+',0.20)');
+    gd.addColorStop(1,'rgba('+r+','+g+','+b+',0)');
+    sc.fillStyle=gd; sc.fillRect(0,0,128,128); return s;
+  };
+  const spBlue=mkSpr(110,160,255), spTeal=mkSpr(80,200,225),
+        spPink=mkSpr(255,140,200), spWarm=mkSpr(255,200,150);
+  const clouds=[];
+  for (let i=0;i<115;i++) {
+    const arm=pickArm();
+    let r=Math.pow(Math.random(),1.1);
+    if(!arm.main) r=0.16+r*0.78;
+    const width=(arm.main?0.12:0.09)+0.12*(1-r);
+    const theta=arm.off+r*TWIST+gauss()*width;
+    let spr,baseA;
+    if(r<0.2){spr=spWarm;baseA=0.18;}
+    else{const t=Math.random();if(t<0.16){spr=spPink;baseA=0.13;}else if(t<0.5){spr=spTeal;baseA=0.11;}else{spr=spBlue;baseA=0.12;}}
+    clouds.push({r,theta,spr,z:gauss()*0.02*(1-r),sizeFrac:rnd(0.05,0.13)*(arm.main?1.1:0.78),a:baseA*rnd(0.6,1.1)*(arm.main?1:0.45)});
+  }
+
+  let galRot=0, lastT=performance.now();
+  (function draw(now) {
+    const dt=Math.min(0.05,(now-lastT)/1000); lastT=now;
+    galRot -= dt*0.06;
+    ctx.clearRect(0,0,W,H);
+    ctx.globalCompositeOperation='lighter';
+
+    const coreR=R*0.32;
+    const cg=ctx.createRadialGradient(cx,cy,0,cx,cy,coreR);
+    cg.addColorStop(0,'rgba(255,251,245,0.55)');
+    cg.addColorStop(0.12,'rgba(253,243,224,0.325)');
+    cg.addColorStop(0.30,'rgba(250,231,198,0.163)');
+    cg.addColorStop(0.58,'rgba(247,221,180,0.055)');
+    cg.addColorStop(1,'rgba(247,221,180,0)');
+    ctx.fillStyle=cg; ctx.beginPath(); ctx.arc(cx,cy,coreR,0,Math.PI*2); ctx.fill();
+
+    const dg=ctx.createRadialGradient(cx,cy,coreR*0.5,cx,cy,R*0.95);
+    dg.addColorStop(0,'rgba(150,180,255,0.05)');
+    dg.addColorStop(0.6,'rgba(120,160,255,0.03)');
+    dg.addColorStop(1,'rgba(120,160,255,0)');
+    ctx.fillStyle=dg; ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2); ctx.fill();
+
+    for (const c of clouds) {
+      const ang=c.theta+galRot;
+      const ux=c.r*Math.cos(ang), uy=c.r*Math.sin(ang)*INCL+c.z;
+      const X=cx+(ux*cosT-uy*sinT)*R, Y=cy+(ux*sinT+uy*cosT)*R;
+      const sz=c.sizeFrac*R;
+      ctx.globalAlpha=c.a;
+      ctx.drawImage(c.spr,X-sz,Y-sz,sz*2,sz*2);
+    }
+
+    for (const p of pts) {
+      const ang=p.theta+galRot;
+      const ux=p.r*Math.cos(ang), uy=p.r*Math.sin(ang)*INCL+p.z;
+      const X=cx+(ux*cosT-uy*sinT)*R, Y=cy+(ux*sinT+uy*cosT)*R;
+      const tw=0.75+0.25*Math.sin(now*0.001*p.tws+p.tw);
+      ctx.globalAlpha=p.a*tw;
+      ctx.fillStyle='rgb('+p.col[0]+','+p.col[1]+','+p.col[2]+')';
+      ctx.beginPath(); ctx.arc(X,Y,p.size,0,Math.PI*2); ctx.fill();
+    }
+    ctx.globalAlpha=1; ctx.globalCompositeOperation='source-over';
+    requestAnimationFrame(draw);
+  })(performance.now());
+})();
+</script>
+</body>
+</html>

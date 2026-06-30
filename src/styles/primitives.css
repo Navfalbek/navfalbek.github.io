@@ -1,0 +1,7 @@
+/* Cross-section utility shared by bio, fact cards and testimonials. */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+}

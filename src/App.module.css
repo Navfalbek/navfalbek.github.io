@@ -1,0 +1,7 @@
+.wrapper {
+  position: relative;
+  min-height: 100vh;
+  background: radial-gradient(ellipse at 50% -10%, #0a1326 0%, #060a16 45%, #04060e 100%);
+  color: var(--text);
+  overflow-x: hidden;
+}

@@ -1,0 +1,164 @@
+.resume {
+  position: relative;
+  z-index: 5;
+  min-height: 100vh;
+  padding: 130px 6vw;
+  max-width: var(--content-max);
+  margin: 0 auto;
+}
+
+.heading {
+  margin-bottom: 44px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+}
+
+.colTitle {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 26px;
+}
+
+.colTitle.blue {
+  color: var(--cyan);
+}
+
+.colTitle.purple {
+  color: var(--purple);
+}
+
+.item {
+  position: relative;
+  padding-left: 26px;
+  padding-bottom: 30px;
+}
+
+.item.blue {
+  border-left: 1px solid rgba(120, 160, 255, 0.22);
+}
+
+.item.purple {
+  border-left: 1px solid rgba(160, 120, 255, 0.22);
+}
+
+.itemDot {
+  position: absolute;
+  left: -5.5px;
+  top: 5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: block;
+}
+
+.itemDot.blue {
+  background: var(--cyan);
+  box-shadow: 0 0 12px var(--cyan);
+}
+
+.itemDot.purple {
+  background: var(--purple);
+  box-shadow: 0 0 12px var(--purple);
+}
+
+.date {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: #8ea0c8;
+}
+
+.title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #f2f6ff;
+  margin: 6px 0 3px;
+}
+
+.org {
+  font-size: 14px;
+  color: #9fb0d4;
+  margin-bottom: 10px;
+}
+
+.detail {
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: #8895b6;
+}
+
+.points {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.point {
+  position: relative;
+  padding-left: 16px;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: #8895b6;
+}
+
+.point::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--purple);
+  display: block;
+}
+
+.skillsHeading {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  color: var(--cyan);
+  text-transform: uppercase;
+  margin: 18px 0;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-bottom: 14px;
+}
+
+.tag {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  padding: 8px 14px;
+  border-radius: 8px;
+}
+
+.tag.skill {
+  border: 1px solid rgba(95, 217, 255, 0.25);
+  background: rgba(95, 217, 255, 0.07);
+  color: #cfe6ff;
+}
+
+.tag.tool {
+  border: 1px solid rgba(168, 123, 255, 0.25);
+  background: rgba(168, 123, 255, 0.07);
+  color: #e0d3ff;
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}

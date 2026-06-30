@@ -1,0 +1,26 @@
+.pill {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  padding: 12px 20px;
+  border: 1px solid rgba(120, 160, 255, 0.28);
+  border-radius: 40px;
+  color: #dfe8ff;
+  text-decoration: none;
+  background: rgba(20, 32, 58, 0.4);
+  transition: all 0.25s;
+}
+
+.cyan:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  background: rgba(40, 80, 140, 0.35);
+  transform: translateY(-2px);
+}
+
+.purple:hover {
+  border-color: var(--purple);
+  color: #cbb6ff;
+  background: rgba(60, 40, 110, 0.4);
+  transform: translateY(-2px);
+}

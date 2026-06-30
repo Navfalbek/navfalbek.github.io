@@ -1,0 +1,81 @@
+:root {
+  /* Palette */
+  --bg: #04060e;
+  --text: #e8ecf5;
+  --cyan: #5fd9ff;
+  --purple: #a87bff;
+  --pink: #ff7ac4;
+
+  /* Fonts */
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Surfaces */
+  --glass-bg: rgba(11, 17, 33, 0.55);
+  --glass-border: rgba(120, 160, 255, 0.14);
+
+  /* Layout */
+  --nav-h: 62px;
+  --content-max: 1180px;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-display);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(95, 217, 255, 0.3);
+  color: #fff;
+}
+
+/* Shared keyframes used across components */
+@keyframes drift1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(8%, 5%) scale(1.18); }
+}
+@keyframes drift2 {
+  0%, 100% { transform: translate(0, 0) scale(1.1); }
+  50% { transform: translate(-7%, -4%) scale(0.92); }
+}
+@keyframes drift3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(5%, -6%) scale(1.2); }
+}
+@keyframes drift4 {
+  0%, 100% { transform: translate(0, 0) scale(0.95); }
+  50% { transform: translate(-6%, 6%) scale(1.12); }
+}
+@keyframes bob {
+  0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.7; }
+  50% { transform: translateX(-50%) translateY(8px); opacity: 1; }
+}
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-18px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

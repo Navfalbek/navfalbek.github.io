@@ -1,0 +1,119 @@
+.portfolio {
+  position: relative;
+  z-index: 5;
+  min-height: 100vh;
+  padding: 130px 6vw;
+  max-width: var(--content-max);
+  margin: 0 auto;
+}
+
+.note {
+  font-size: 14px;
+  color: #8895b6;
+  font-family: var(--font-mono);
+  letter-spacing: 0.06em;
+  margin: 14px 0 40px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 22px;
+}
+
+.card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(120, 160, 255, 0.16);
+  background: rgba(10, 14, 28, 0.55);
+  aspect-ratio: 16 / 11;
+}
+
+.cardBg {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    135deg,
+    rgba(120, 160, 255, 0.05) 0 13px,
+    rgba(120, 160, 255, 0.12) 13px 26px
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cardBg span {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: rgba(180, 205, 255, 0.45);
+}
+
+.foot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: linear-gradient(0deg, rgba(5, 8, 18, 0.94), rgba(5, 8, 18, 0));
+}
+
+.name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: #eaf0ff;
+  font-size: 15px;
+}
+
+.tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--cyan);
+  white-space: nowrap;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  background: linear-gradient(140deg, rgba(18, 42, 84, 0.94), rgba(48, 22, 78, 0.94));
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.card:hover .overlay,
+.card:focus-within .overlay {
+  opacity: 1;
+}
+
+.overlayName {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 19px;
+  color: #fff;
+}
+
+.overlayDesc {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.65;
+  color: #cfe0ff;
+}
+
+.overlayTag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: #7fdcff;
+  margin-top: 4px;
+}

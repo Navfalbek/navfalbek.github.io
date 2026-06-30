@@ -1,0 +1,77 @@
+.testimonials {
+  position: relative;
+  z-index: 5;
+  min-height: 90vh;
+  padding: 130px 6vw;
+  max-width: var(--content-max);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.note {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: #6f7d9e;
+  margin: 10px 0 40px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 22px;
+}
+
+.card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.qmark {
+  font-family: var(--font-display);
+  font-size: 48px;
+  line-height: 0.6;
+  color: rgba(95, 217, 255, 0.4);
+}
+
+.quote {
+  font-size: 15px;
+  line-height: 1.75;
+  color: #c0cbe6;
+  font-style: italic;
+}
+
+.author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 30%, #6fd2ff, #5b3aa0);
+  flex-shrink: 0;
+}
+
+.name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #eaf0ff;
+}
+
+.role {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: #8895b6;
+}

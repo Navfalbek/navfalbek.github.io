@@ -1,0 +1,15 @@
+.label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.34em;
+  margin-bottom: 14px;
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(30px, 4.6vw, 52px);
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: #f2f6ff;
+}

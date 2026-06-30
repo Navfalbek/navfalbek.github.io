@@ -1,0 +1,85 @@
+.hero {
+  position: relative;
+  z-index: 5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 120px 6vw 90px;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.42em;
+  color: var(--cyan);
+  margin-bottom: 26px;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(46px, 9vw, 116px);
+  line-height: 0.98;
+  letter-spacing: -0.025em;
+  background: linear-gradient(118deg, #ffffff, #9fd8ff 42%, #b69bff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  max-width: 14ch;
+}
+
+.sub {
+  font-family: var(--font-mono);
+  font-size: clamp(13px, 1.6vw, 16px);
+  letter-spacing: 0.22em;
+  color: #cdd8f2;
+  margin-top: 26px;
+  text-transform: uppercase;
+}
+
+.desc {
+  max-width: 60ch;
+  margin-top: 24px;
+  font-size: clamp(15px, 1.8vw, 18px);
+  line-height: 1.7;
+  color: #9fadcb;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 38px;
+}
+
+.scrollHint {
+  position: absolute;
+  bottom: 34px;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  animation: bob 2.4s ease-in-out infinite;
+}
+
+.scrollHintText {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: #7e8cae;
+}
+
+.scrollArrow {
+  width: 11px;
+  height: 11px;
+  border-right: 1.5px solid var(--cyan);
+  border-bottom: 1.5px solid var(--cyan);
+  transform: rotate(45deg);
+  display: block;
+}
+

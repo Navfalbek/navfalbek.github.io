@@ -1,0 +1,34 @@
+.rail {
+  position: fixed;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  background: rgba(150, 180, 255, 0.25);
+  transition: transform 0.3s, background 0.3s, box-shadow 0.3s;
+}
+
+.dot.active {
+  background: var(--cyan);
+  transform: scale(1.7);
+  box-shadow: 0 0 12px var(--cyan);
+}
+
+@media (max-width: 768px) {
+  .rail {
+    display: none;
+  }
+}
