@@ -45,22 +45,6 @@ body {
 }
 
 /* Shared keyframes used across components */
-@keyframes drift1 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(8%, 5%) scale(1.18); }
-}
-@keyframes drift2 {
-  0%, 100% { transform: translate(0, 0) scale(1.1); }
-  50% { transform: translate(-7%, -4%) scale(0.92); }
-}
-@keyframes drift3 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(5%, -6%) scale(1.2); }
-}
-@keyframes drift4 {
-  0%, 100% { transform: translate(0, 0) scale(0.95); }
-  50% { transform: translate(-6%, 6%) scale(1.12); }
-}
 @keyframes bob {
   0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.7; }
   50% { transform: translateX(-50%) translateY(8px); opacity: 1; }
