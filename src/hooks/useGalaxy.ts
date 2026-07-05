@@ -1,41 +1,24 @@
 import { useEffect, type RefObject } from 'react';
 
-// ---------------------------------------------------------------------------
-// A Milky-Way-like barred spiral (SBbc) seen at a gentle inclination.
-//
-// Geometry: two major arms (Scutum-Centaurus / Perseus analogues) spring from
-// the tips of the central bar and wind outward as logarithmic spirals
-// r = R_BAR * e^(PITCH * (theta - off)) with a ~14 deg pitch angle, close to
-// the measured Milky Way value. Two fainter arms (Sagittarius / Norma
-// analogues) and a short Local-Spur-like segment run between them, and a
-// faint molecular ring circles the bar.
-//
-// Rendering: all the smooth structure — disc glow, bulge, bar, clumpy arm
-// haze with spurs, dark dust lanes (inner arm edges + the classic straight
-// bar lanes), pink H-II regions and blue OB associations — is baked once at
-// startup into an offscreen face-on texture from ~20k tiny additive
-// particles, then projected (rotated, inclined, tilted) each frame. Only the
-// resolved stars twinkle live on top, so per-frame cost stays low.
-// ---------------------------------------------------------------------------
-
-const PITCH = 0.33; // tan(pitch angle) ~ 18deg — slightly open for readability
-const R_BAR = 0.16; // bar half-length; the major arms start at the bar tips
+// Milky Way geometry: a barred spiral seen at a gentle inclination.
+// Arms follow a logarithmic spiral r = R0 * e^(PITCH * theta) with a ~13.5deg
+// pitch angle (the measured value for the Milky Way); the two major arms
+// (Scutum-Centaurus / Perseus analogues) spring from the ends of the central
+// bar, with two fainter minor arms between them.
+const PITCH = 0.24; // tan(pitch angle)
+const R0 = 0.05; // radius (fraction of R) where the arms leave the bar
 const INCL = 0.5; // disc inclination squash
 const TILT = -0.3; // screen-space tilt of the disc
 const BAR_ANGLE = 0.9; // bar orientation in disc space
-const EDGE = 1.07; // disc radius (in r units) mapped to the texture edge
-const ROT_SPEED = 0.02; // pattern rotation in rad/s; arms trail the spin
-const STAR_COUNT = 2400; // live resolved stars
-const TAU = Math.PI * 2;
+const BAR_HALF = 0.16; // bar half-length as a fraction of R
+const STAR_COUNT = 3400;
 
 type RGB = [number, number, number];
 
 interface Arm {
-  off: number; // spiral phase: the angle the arm holds at r = R_BAR
-  r0: number; // radius where the arm starts
-  r1: number; // radius where the arm fades out
-  lum: number; // relative brightness
+  off: number;
   major: boolean;
+  w: number;
 }
 
 interface GalaxyStar {
@@ -47,62 +30,46 @@ interface GalaxyStar {
   a: number;
   tw: number;
   tws: number;
+  fg: boolean;
 }
 
-interface HeroStar {
+interface Haze {
   r: number;
   theta: number;
   z: number;
   spr: HTMLCanvasElement;
-  col: string;
-  core: number;
-  glow: number;
+  sizeFrac: number;
   a: number;
-  tw: number;
-  tws: number;
+}
+
+interface DustLane {
+  r: number;
+  theta: number;
+  sizeFrac: number;
+  stretch: number;
+  a: number;
+}
+
+interface HIIRegion {
+  r: number;
+  theta: number;
+  sizeFrac: number;
+  a: number;
 }
 
 const rnd = (a: number, b: number) => a + Math.random() * (b - a);
 /** Approximate gaussian in [-1, 1] via summed uniforms — concentrates points on the arms. */
 const gauss = () => (Math.random() + Math.random() + Math.random() - 1.5) / 1.5;
-const clamp = (x: number, a: number, b: number) => (x < a ? a : x > b ? b : x);
-const smooth01 = (x: number) => (x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x));
 
 /** Angle of the logarithmic spiral centerline of an arm at radius r. */
-const armTheta = (r: number, off: number) => off + Math.log(Math.max(r, R_BAR) / R_BAR) / PITCH;
-
-/** Physical half-width of an arm (grows gently with radius). */
-const armWidth = (r: number, major: boolean) => (0.07 + 0.05 * r) * (major ? 1 : 0.72);
-
-const rgba = (c: RGB, a: number) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
-
-const makeSprite = (stops: Array<[number, string]>, size = 64): HTMLCanvasElement => {
-  const s = document.createElement('canvas');
-  s.width = s.height = size;
-  const sc = s.getContext('2d')!;
-  const half = size / 2;
-  const gd = sc.createRadialGradient(half, half, 0, half, half, half);
-  for (const [p, c] of stops) gd.addColorStop(p, c);
-  sc.fillStyle = gd;
-  sc.fillRect(0, 0, size, size);
-  return s;
-};
-
-/** Soft round particle used to accumulate smooth galaxy light. */
-const softDot = (c: RGB) =>
-  makeSprite([
-    [0, rgba(c, 0.85)],
-    [0.32, rgba(c, 0.34)],
-    [0.62, rgba(c, 0.1)],
-    [1, rgba(c, 0)],
-  ]);
+const armTheta = (r: number, off: number) => off + Math.log(Math.max(r, R0) / R0) / PITCH;
 
 /**
- * Renders a slowly-rotating, photo-real Milky-Way-like barred spiral: a
- * blazing white-yellow core and bar, blue clumpy spiral arms threaded by dark
- * dust lanes and dotted with pink star-forming regions, all fading into a
- * faint stellar halo. This is the page's opening backdrop before the scroll
- * pulls the viewer in.
+ * Renders a slowly-rotating Milky-Way-like barred spiral galaxy: a warm
+ * yellow-white bulge and bar, logarithmic spiral arms traced by blue young
+ * stars and pink H-II star-forming regions, dark dust lanes hugging the inner
+ * edges of the arms, and a smooth disc of older field stars. This is the
+ * page's opening backdrop before the scroll pulls the viewer in.
  */
 export function useGalaxy(canvasRef: RefObject<HTMLCanvasElement>): void {
   useEffect(() => {
@@ -140,363 +107,21 @@ export function useGalaxy(canvasRef: RefObject<HTMLCanvasElement>): void {
       return [cx + (ux * cosT - uy * sinT) * R, cy + (ux * sinT + uy * cosT) * R];
     };
 
-    const ARMS: Arm[] = [
-      { off: BAR_ANGLE, r0: R_BAR * 0.98, r1: 1.04, lum: 1, major: true },
-      { off: BAR_ANGLE + Math.PI * 1.02, r0: R_BAR * 0.98, r1: 0.97, lum: 0.9, major: true },
-      { off: BAR_ANGLE + Math.PI * 0.55, r0: 0.24, r1: 0.88, lum: 0.5, major: false },
-      { off: BAR_ANGLE + Math.PI * 1.52, r0: 0.26, r1: 0.92, lum: 0.46, major: false },
-      // A short Local-Spur-like segment between the two majors.
-      { off: BAR_ANGLE + 2.5, r0: 0.5, r1: 0.74, lum: 0.34, major: false },
+    const arms: Arm[] = [
+      { off: BAR_ANGLE, major: true, w: 1 },
+      { off: BAR_ANGLE + Math.PI, major: true, w: 1 },
+      { off: BAR_ANGLE + Math.PI * 0.5, major: false, w: 0.45 },
+      { off: BAR_ANGLE + Math.PI * 1.5, major: false, w: 0.45 },
     ];
-    // Per-arm phases for the brightness clumping and dust-gap noise.
-    const seeds = ARMS.map(() => [rnd(0, TAU), rnd(0, TAU), rnd(0, TAU)]);
-    const clumpAt = (i: number, x: number) =>
-      clamp(
-        0.6 +
-          0.5 * Math.sin(x * 2.1 + seeds[i][0]) * Math.sin(x * 3.7 + seeds[i][1]) +
-          0.22 * Math.sin(x * 8.3 + seeds[i][2]),
-        0.15,
-        1.25,
-      );
-
-    // --- Bake the smooth galaxy into a face-on texture -----------------------
-    const buildTexture = (): HTMLCanvasElement => {
-      const TEX = clamp(Math.ceil((R * 2.15) / 128) * 128, 1024, 2560);
-      const tex = document.createElement('canvas');
-      tex.width = tex.height = TEX;
-      const g = tex.getContext('2d')!;
-      const S = TEX / 2;
-      const scale = S / EDGE; // texture px per unit of galaxy radius
-
-      const P = (r: number, th: number): [number, number] => [
-        S + Math.cos(th) * r * scale,
-        S + Math.sin(th) * r * scale,
-      ];
-
-      // Star-light particle sprites.
-      const sprArm = softDot([140, 176, 255]); // hot young stars
-      const sprIce = softDot([202, 216, 252]); // blue-white blend
-      const sprCyan = softDot([152, 212, 235]);
-      const sprWarm = softDot([255, 224, 182]); // old disc population
-      const sprAmber = softDot([255, 206, 148]);
-      const sprHII = makeSprite([
-        [0, 'rgba(255,190,205,0.9)'],
-        [0.28, 'rgba(255,110,150,0.45)'],
-        [0.65, 'rgba(225,60,110,0.12)'],
-        [1, 'rgba(225,60,110,0)'],
-      ]);
-      const sprHIICore = makeSprite([
-        [0, 'rgba(255,235,240,0.95)'],
-        [0.5, 'rgba(255,160,185,0.3)'],
-        [1, 'rgba(255,160,185,0)'],
-      ]);
-      const sprDust = makeSprite([
-        [0, 'rgba(9,5,4,0.9)'],
-        [0.5, 'rgba(12,7,5,0.38)'],
-        [1, 'rgba(12,7,5,0)'],
-      ]);
-
-      const put = (spr: HTMLCanvasElement, r: number, th: number, size: number, alpha: number) => {
-        const [x, y] = P(r, th);
-        const s = size * scale;
-        g.globalAlpha = clamp(alpha, 0, 1);
-        g.drawImage(spr, x - s, y - s, s * 2, s * 2);
-      };
-      /** Particle stretched to (along x across) galaxy units, rotated to angle phi. */
-      const putStreak = (
-        spr: HTMLCanvasElement,
-        r: number,
-        th: number,
-        phi: number,
-        along: number,
-        across: number,
-        alpha: number,
-      ) => {
-        const [x, y] = P(r, th);
-        g.save();
-        g.translate(x, y);
-        g.rotate(phi);
-        g.globalAlpha = clamp(alpha, 0, 1);
-        g.drawImage(spr, -along * scale, -across * scale, along * 2 * scale, across * 2 * scale);
-        g.restore();
-      };
-      /** Texture-space direction of the arm at radius r (for streaks / dust). */
-      const tangentAt = (r: number, off: number): number => {
-        const [x1, y1] = P(r, armTheta(r, off));
-        const [x2, y2] = P(r * 1.03, armTheta(r * 1.03, off));
-        return Math.atan2(y2 - y1, x2 - x1);
-      };
-      /** Elliptical radial glow aligned with the bar (squash 1 = circular). */
-      const ell = (radius: number, squash: number, stops: Array<[number, string]>) => {
-        g.save();
-        g.translate(S, S);
-        g.rotate(BAR_ANGLE);
-        g.scale(1, squash);
-        const rad = radius * scale;
-        const gd = g.createRadialGradient(0, 0, 0, 0, 0, rad);
-        for (const [p, c] of stops) gd.addColorStop(p, c);
-        g.fillStyle = gd;
-        g.fillRect(-rad, -rad / squash, rad * 2, (rad * 2) / squash);
-        g.restore();
-      };
-
-      g.globalCompositeOperation = 'lighter';
-
-      // 1. Smooth base light: cool outer disc + warm inner disc.
-      ell(1.04, 1, [
-        [0, 'rgba(102,120,172,0.24)'],
-        [0.45, 'rgba(92,110,162,0.12)'],
-        [0.75, 'rgba(72,90,145,0.05)'],
-        [1, 'rgba(60,76,130,0)'],
-      ]);
-      ell(0.62, 1, [
-        [0, 'rgba(255,224,180,0.3)'],
-        [0.5, 'rgba(235,208,180,0.1)'],
-        [1, 'rgba(235,208,180,0)'],
-      ]);
-
-      // 2. Unresolved field stars: smooth grain across the whole disc.
-      const sprinkleField = (count: number, aScale: number) => {
-        for (let i = 0; i < count; i++) {
-          const r = Math.pow(Math.random(), 1.5) * 1.03;
-          const th = rnd(0, TAU);
-          const warm = Math.random() < clamp(0.72 - r * 0.55, 0.15, 0.75);
-          const spr = warm
-            ? Math.random() < 0.3
-              ? sprAmber
-              : sprWarm
-            : Math.random() < 0.3
-              ? sprArm
-              : sprIce;
-          put(spr, r, th, rnd(0.003, 0.009), rnd(0.04, 0.11) * (1.15 - r * 0.6) * aScale);
-        }
-      };
-      sprinkleField(9000, 1);
-
-      // 3. Spiral arms: dense haze with a bright blue ridge, clumpy along
-      // their length, warmer toward the centre, fading at the tips.
-      ARMS.forEach((A, i) => {
-        const n = A.major ? 9 : 5;
-        for (let r = A.r0; r < A.r1; r += 0.0035) {
-          const t = (r - A.r0) / (A.r1 - A.r0);
-          const th0 = armTheta(r, A.off);
-          const env = smooth01(t / 0.1) * (1 - smooth01((t - 0.72) / 0.28) * 0.75);
-          const cl = clumpAt(i, th0);
-          const wAng = armWidth(r, A.major) / Math.max(r, 0.12);
-          for (let k = 0; k < n; k++) {
-            const sp = gauss();
-            const th = th0 + sp * wAng;
-            const rr = r + gauss() * 0.01;
-            const ridge = 1 - Math.min(1, Math.abs(sp) * 1.5);
-            const roll = Math.random();
-            const spr =
-              rr < 0.3 && roll < 0.45
-                ? sprWarm
-                : roll < 0.12
-                  ? sprCyan
-                  : roll < 0.5 + ridge * 0.3
-                    ? sprArm
-                    : sprIce;
-            const size = rnd(0.012, 0.032) * (1.3 - ridge * 0.4);
-            put(spr, rr, th, size, (0.04 + 0.07 * ridge) * env * cl * A.lum);
-          }
-        }
-      });
-
-      // Ridge streaks: elongated wisps along the arm direction so the arms
-      // read as flowing streams instead of dotted trails.
-      ARMS.forEach((A, i) => {
-        if (!A.major) return;
-        for (let r = A.r0 + 0.02; r < A.r1 - 0.02; r += 0.009) {
-          const t = (r - A.r0) / (A.r1 - A.r0);
-          const cl = clumpAt(i, armTheta(r, A.off));
-          const wAng = armWidth(r, true) / Math.max(r, 0.12);
-          const th = armTheta(r, A.off) + gauss() * wAng * 0.3;
-          putStreak(
-            Math.random() < 0.6 ? sprArm : sprIce,
-            r,
-            th,
-            tangentAt(r, A.off),
-            rnd(0.025, 0.055),
-            rnd(0.012, 0.02),
-            0.07 * cl * A.lum * (1 - t * 0.5),
-          );
-        }
-      });
-
-      // 4. Spurs / feathers of young stars branching off the major arms.
-      for (let i = 0; i < 22; i++) {
-        const A = ARMS[(Math.random() * 2) | 0];
-        const rA = rnd(0.22, 0.78);
-        const thA = armTheta(rA, A.off) + ((gauss() * armWidth(rA, true)) / rA) * 0.4;
-        const len = rnd(0.06, 0.16);
-        const dir = Math.random() < 0.72 ? 1 : -1;
-        const p2 = PITCH * rnd(1.7, 2.8); // spurs open faster than the arm
-        for (let s = 0; s < 26; s++) {
-          const f = s / 26;
-          const r = rA + dir * len * f;
-          if (r < 0.1 || r > 1.03) break;
-          const th = thA + Math.log(r / rA) / p2 + gauss() * 0.015;
-          put(Math.random() < 0.5 ? sprArm : sprIce, r, th, rnd(0.004, 0.01), 0.035 * (1 - f) * A.lum);
-        }
-      }
-
-      // 5. Molecular ring around the bar (the Milky Way's "5 kpc ring").
-      for (let i = 0; i < 260; i++) {
-        const r = R_BAR * 1.12 + gauss() * 0.018;
-        const th = rnd(0, TAU);
-        put(Math.random() < 0.5 ? sprWarm : sprArm, r, th, rnd(0.004, 0.01), rnd(0.02, 0.05));
-      }
-
-      // 6. The bar: an elongated warm stellar lens the arms unwind from.
-      ell(R_BAR * 1.75, 0.36, [
-        [0, 'rgba(255,222,175,0.4)'],
-        [0.5, 'rgba(255,210,160,0.14)'],
-        [1, 'rgba(255,210,160,0)'],
-      ]);
-      for (let i = 0; i < 1100; i++) {
-        const along = gauss() * R_BAR * 0.92;
-        const across = gauss() * 0.042 * (1 - (0.5 * Math.abs(along)) / R_BAR);
-        const r = Math.hypot(along, across);
-        const th = Math.atan2(across, along) + BAR_ANGLE;
-        put(Math.random() < 0.35 ? sprAmber : sprWarm, r, th, rnd(0.003, 0.009), rnd(0.04, 0.1));
-      }
-
-      // 7. Bulge: a boxy warm spheroid saturating to white at the very core.
-      ell(0.38, 0.8, [
-        [0, 'rgba(255,232,196,0.6)'],
-        [0.35, 'rgba(255,214,166,0.25)'],
-        [1, 'rgba(255,214,166,0)'],
-      ]);
-      ell(0.17, 0.86, [
-        [0, 'rgba(255,248,232,0.9)'],
-        [0.4, 'rgba(255,228,190,0.42)'],
-        [1, 'rgba(255,228,190,0)'],
-      ]);
-      ell(0.07, 0.9, [
-        [0, 'rgba(255,255,252,1)'],
-        [0.5, 'rgba(255,242,218,0.5)'],
-        [1, 'rgba(255,242,218,0)'],
-      ]);
-      for (let i = 0; i < 800; i++) {
-        const along = gauss() * 0.115;
-        const across = gauss() * 0.085;
-        const r = Math.hypot(along, across);
-        const th = Math.atan2(across, along) + BAR_ANGLE;
-        put(Math.random() < 0.3 ? sprAmber : sprWarm, r, th, rnd(0.002, 0.006), rnd(0.05, 0.12));
-      }
-
-      // 8. H-II regions (pink star nurseries) and blue OB associations strung
-      // along the arm ridges, on the outer (downstream) side of the dust.
-      for (let i = 0; i < 58; i++) {
-        const A = ARMS[Math.random() < 0.78 ? (Math.random() * 2) | 0 : 2 + ((Math.random() * 2) | 0)];
-        const r = rnd(Math.max(A.r0 + 0.04, 0.2), A.r1 - 0.04);
-        const wAng = armWidth(r, A.major) / Math.max(r, 0.12);
-        const th = armTheta(r, A.off) - wAng * 0.15 + gauss() * wAng * 0.3;
-        const size = rnd(0.007, 0.022);
-        put(sprHII, r, th, size, rnd(0.22, 0.48) * A.lum);
-        if (size > 0.013) put(sprHIICore, r, th, size * 0.34, 0.5);
-      }
-      for (let i = 0; i < 44; i++) {
-        const A = ARMS[(Math.random() * 2) | 0];
-        const r = rnd(0.2, A.r1 - 0.04);
-        const wAng = armWidth(r, true) / Math.max(r, 0.12);
-        const th = armTheta(r, A.off) + gauss() * wAng * 0.32;
-        put(sprArm, r, th, rnd(0.004, 0.009), rnd(0.3, 0.55));
-        put(sprIce, r, th, rnd(0.0015, 0.003), 0.7);
-      }
-
-      // 9. Dust. 'source-atop' only darkens existing light, so the lanes eat
-      // into the glow without smudging the empty sky around the disc.
-      g.globalCompositeOperation = 'source-atop';
-
-      // Winding lanes hugging the inner (concave) edge of each arm.
-      ARMS.forEach((A, i) => {
-        if (!A.major && A.lum < 0.4) return; // the spur segment gets no lane
-        const strength = A.major ? 1 : 0.45;
-        const d1 = seeds[i][0];
-        const d2 = seeds[i][1];
-        for (let r = Math.max(A.r0 + 0.01, 0.17); r < Math.min(A.r1, 0.94); r += 0.004) {
-          const th0 = armTheta(r, A.off);
-          const gap = 0.62 + 0.5 * Math.sin(th0 * 3.1 + d1) * Math.sin(th0 * 6.7 + d2);
-          if (gap < 0.22) continue; // patchy, broken lanes
-          const wAng = armWidth(r, A.major) / Math.max(r, 0.12);
-          const wig = 0.3 * Math.sin(r * 34 + d1) + 0.18 * Math.sin(r * 77 + d2);
-          const th = th0 + wAng * (0.42 + 0.25 * wig);
-          const fade = r < 0.72 ? 1 : 1 - (r - 0.72) / 0.22;
-          const across = rnd(0.009, 0.018) * (1.15 - 0.4 * r);
-          const phi = tangentAt(r, A.off);
-          putStreak(
-            sprDust,
-            r + gauss() * 0.004,
-            th,
-            phi,
-            across * rnd(2.4, 3.8),
-            across,
-            rnd(0.25, 0.45) * fade * strength * Math.min(1, gap),
-          );
-          if (Math.random() < 0.3) {
-            // a second, fainter thread further into the arm
-            putStreak(sprDust, r, th0 + wAng * rnd(0, 0.3), phi, across * 2, across * 0.7, 0.12 * fade * strength);
-          }
-        }
-      });
-
-      // Dust feathers cutting across the arms toward their outer edges.
-      for (let i = 0; i < 34; i++) {
-        const A = ARMS[i % 2];
-        let r = rnd(0.22, 0.8);
-        const wAng0 = armWidth(r, true) / r;
-        let th = armTheta(r, A.off) + wAng0 * 0.5;
-        const steps = 8 + ((Math.random() * 8) | 0);
-        const drs = rnd(0.004, 0.009);
-        for (let s = 0; s < steps; s++) {
-          const f = s / steps;
-          putStreak(
-            sprDust,
-            r,
-            th,
-            tangentAt(r, A.off) + rnd(-0.3, 0.3),
-            0.008,
-            0.0035,
-            0.16 * (1 - f * 0.7),
-          );
-          r += drs;
-          th += Math.log(r / (r - drs)) / PITCH - (wAng0 * 1.5) / steps;
-        }
-      }
-
-      // The classic straight bar lanes: an S through the centre, each half
-      // offset toward the side its arm dust continues from.
-      for (let s = -1; s <= 1; s += 2) {
-        for (let t = 0.12; t < 1; t += 0.05) {
-          const along = s * t * R_BAR;
-          const across = s * (0.01 + 0.016 * t);
-          const r = Math.hypot(along, across);
-          const th = Math.atan2(across, along) + BAR_ANGLE;
-          putStreak(sprDust, r, th, BAR_ANGLE, 0.01, 0.004, 0.28 * (0.4 + 0.6 * t));
-        }
-      }
-
-      // 10. A sprinkle of foreground starlight so the dust reads translucent.
-      g.globalCompositeOperation = 'lighter';
-      sprinkleField(700, 0.4);
-
-      g.globalAlpha = 1;
-      g.globalCompositeOperation = 'source-over';
-      return tex;
+    let wSum = 0;
+    const wAcc = arms.map((a) => (wSum += a.w));
+    const pickArm = (): Arm => {
+      const x = Math.random() * wSum;
+      for (let k = 0; k < arms.length; k++) if (x <= wAcc[k]) return arms[k];
+      return arms[0];
     };
 
-    const tex = buildTexture();
-
-    // Gentle live glow over the core so the 8-bit texture still blooms.
-    const spCore = makeSprite([
-      [0, 'rgba(255,243,220,0.55)'],
-      [0.35, 'rgba(255,226,184,0.18)'],
-      [1, 'rgba(255,226,184,0)'],
-    ]);
-
-    // --- Live star populations ------------------------------------------------
+    // --- Star populations ---------------------------------------------------
     const BULGE: RGB[] = [
       [255, 226, 180],
       [255, 238, 208],
@@ -514,20 +139,6 @@ export function useGalaxy(canvasRef: RefObject<HTMLCanvasElement>): void {
     ];
     const pick = (list: RGB[]) => list[(Math.random() * list.length) | 0].join(',');
 
-    /** Weighted choice among the arms whose radial range contains r. */
-    const armFor = (r: number): Arm | null => {
-      let sum = 0;
-      for (const a of ARMS) if (r >= a.r0 && r <= a.r1) sum += a.lum;
-      if (!sum) return null;
-      let x = Math.random() * sum;
-      for (const a of ARMS) {
-        if (r < a.r0 || r > a.r1) continue;
-        x -= a.lum;
-        if (x <= 0) return a;
-      }
-      return null;
-    };
-
     const pts: GalaxyStar[] = [];
     for (let i = 0; i < STAR_COUNT; i++) {
       const u = Math.random();
@@ -538,85 +149,180 @@ export function useGalaxy(canvasRef: RefObject<HTMLCanvasElement>): void {
       let size: number;
       let a: number;
 
-      if (u < 0.11) {
+      if (u < 0.14) {
         // Central bulge: a dense, slightly puffy spheroid of old warm stars.
-        r = Math.pow(Math.random(), 2.2) * 0.16;
-        theta = rnd(0, TAU);
-        z = gauss() * 0.045 * (1 - r * 2.5);
+        r = Math.pow(Math.random(), 2.1) * 0.17;
+        theta = rnd(0, Math.PI * 2);
+        z = gauss() * 0.05 * (1 - r * 2.5);
         col = Math.random() < 0.06 ? '255,180,140' : pick(BULGE);
-        size = rnd(0.35, 1) * dpr;
-        a = rnd(0.25, 0.55);
-      } else if (u < 0.21) {
-        // The bar.
-        const along = gauss() * R_BAR;
-        const across = gauss() * R_BAR * 0.3;
+        size = rnd(0.4, 1.15) * dpr;
+        a = rnd(0.28, 0.62);
+      } else if (u < 0.27) {
+        // The bar: an elongated warm stellar lens the arms unwind from.
+        const along = gauss() * BAR_HALF;
+        const across = gauss() * BAR_HALF * 0.3;
         r = Math.hypot(along, across);
         theta = Math.atan2(across, along) + BAR_ANGLE;
         z = gauss() * 0.015;
         col = pick(BULGE);
-        size = rnd(0.35, 1.1) * dpr;
-        a = rnd(0.24, 0.55);
-      } else if (u < 0.29) {
-        // Sparse stellar halo: old faint stars in a puffy spheroid.
-        r = 0.2 + Math.pow(Math.random(), 1.6) * 0.85;
-        theta = rnd(0, TAU);
-        z = gauss() * 0.4 * r;
-        col = Math.random() < 0.5 ? pick(BULGE) : pick(DISC);
-        size = rnd(0.3, 0.8) * dpr;
-        a = rnd(0.06, 0.22);
+        size = rnd(0.4, 1.2) * dpr;
+        a = rnd(0.26, 0.6);
       } else {
-        // Disc stars: most trace the arms, the rest are inter-arm field.
-        r = 0.08 + Math.pow(Math.random(), 1.25) * 0.97;
-        const arm = Math.random() < 0.68 ? armFor(r) : null;
-        z = gauss() * 0.013 * (1 - r * 0.5);
-        if (arm) {
-          const wAng = armWidth(r, arm.major) / Math.max(r, 0.12);
-          const sp = gauss();
-          theta = armTheta(r, arm.off) + sp * wAng;
-          const ridge = arm.major && Math.abs(sp) < 0.5;
-          if (ridge && r > 0.24 && Math.random() < 0.7) {
-            col = pick(YOUNG); // hot young stars light up the arm ridges
-          } else if (Math.random() < 0.05) {
-            col = '255,185,145'; // scattered red giants
-          } else {
-            col = pick(DISC);
-          }
-          size = rnd(0.35, 1.45) * dpr * (ridge ? 1.15 : 1);
-          a = rnd(0.25, 0.8) * (0.55 + 0.45 * arm.lum);
+        // Disc stars: exponential-ish radial falloff; most trace the arms,
+        // a smooth inter-arm "field" population fills the space between.
+        r = 0.07 + Math.pow(Math.random(), 1.3) * 0.98;
+        const field = Math.random() < 0.26;
+        const arm = pickArm();
+        // Constant-ish physical arm width => angular width shrinks with r.
+        const width = (0.055 + 0.06 / (r + 0.25)) * (arm.major ? 1 : 1.2);
+        const spread = gauss() * width;
+        theta = field ? rnd(0, Math.PI * 2) : armTheta(r, arm.off) + spread;
+        z = gauss() * 0.014 * (1 - r * 0.5);
+        const onRidge = !field && arm.major && Math.abs(spread) < width * 0.55;
+        if (onRidge && r > 0.26 && Math.random() < 0.72) {
+          col = pick(YOUNG); // hot young stars light up the arm ridges
+        } else if (Math.random() < 0.05) {
+          col = '255,185,145'; // scattered red giants
         } else {
-          theta = rnd(0, TAU);
-          col = Math.random() < 0.05 ? '255,185,145' : pick(DISC);
-          size = rnd(0.3, 1.1) * dpr;
-          a = rnd(0.1, 0.4);
+          col = pick(DISC);
         }
+        size = rnd(0.4, 1.5) * dpr * (onRidge ? 1.12 : 1);
+        a = (field ? rnd(0.14, 0.45) : rnd(0.26, 0.85)) * (arm.major || field ? 1 : 0.6);
       }
 
-      pts.push({ r, theta, z, col, size, a, tw: Math.random() * TAU, tws: rnd(0.6, 2.2) });
-    }
-
-    // A handful of bright "hero" stars with visible glow.
-    const heroKinds: Array<[RGB, string]> = [
-      [[168, 196, 255], '235,242,255'],
-      [[255, 238, 214], '255,248,236'],
-      [[255, 204, 150], '255,228,196'],
-    ];
-    const heroSprites = heroKinds.map(([c]) => softDot(c));
-    const heroes: HeroStar[] = [];
-    for (let i = 0; i < 44; i++) {
-      const k = Math.random() < 0.5 ? 0 : Math.random() < 0.6 ? 1 : 2;
-      heroes.push({
-        r: 0.05 + Math.pow(Math.random(), 1.3),
-        theta: rnd(0, TAU),
-        z: gauss() * 0.05,
-        spr: heroSprites[k],
-        col: heroKinds[k][1],
-        core: rnd(0.7, 1.5) * dpr,
-        glow: rnd(3, 9) * dpr,
-        a: rnd(0.4, 0.9),
-        tw: Math.random() * TAU,
-        tws: rnd(0.4, 1.4),
+      pts.push({
+        r,
+        theta,
+        z,
+        col,
+        size,
+        a,
+        tw: Math.random() * Math.PI * 2,
+        tws: rnd(0.6, 2.2),
+        fg: Math.random() < 0.18, // drawn above the dust lanes
       });
     }
+
+    // --- Sprites -------------------------------------------------------------
+    const makeGlow = (stops: Array<[number, string]>): HTMLCanvasElement => {
+      const s = document.createElement('canvas');
+      s.width = s.height = 256;
+      const sc = s.getContext('2d')!;
+      const gd = sc.createRadialGradient(128, 128, 0, 128, 128, 128);
+      for (const [p, c] of stops) gd.addColorStop(p, c);
+      sc.fillStyle = gd;
+      sc.fillRect(0, 0, 256, 256);
+      return s;
+    };
+
+    const spCore = makeGlow([
+      [0, 'rgba(255,246,224,0.95)'],
+      [0.2, 'rgba(255,233,192,0.5)'],
+      [0.5, 'rgba(255,216,164,0.16)'],
+      [1, 'rgba(255,216,164,0)'],
+    ]);
+    const spBar = makeGlow([
+      [0, 'rgba(255,230,185,0.7)'],
+      [0.45, 'rgba(255,214,165,0.26)'],
+      [1, 'rgba(255,214,165,0)'],
+    ]);
+    const spDisc = makeGlow([
+      [0, 'rgba(158,182,242,0.16)'],
+      [0.55, 'rgba(132,162,235,0.07)'],
+      [1, 'rgba(132,162,235,0)'],
+    ]);
+    const spHazeBlue = makeGlow([
+      [0, 'rgba(135,172,255,0.8)'],
+      [0.45, 'rgba(135,172,255,0.22)'],
+      [1, 'rgba(135,172,255,0)'],
+    ]);
+    const spHazeCyan = makeGlow([
+      [0, 'rgba(120,205,230,0.75)'],
+      [0.45, 'rgba(120,205,230,0.2)'],
+      [1, 'rgba(120,205,230,0)'],
+    ]);
+    const spHazeWarm = makeGlow([
+      [0, 'rgba(255,216,168,0.8)'],
+      [0.45, 'rgba(255,216,168,0.22)'],
+      [1, 'rgba(255,216,168,0)'],
+    ]);
+    const spHII = makeGlow([
+      [0, 'rgba(255,196,208,0.95)'],
+      [0.3, 'rgba(255,118,158,0.5)'],
+      [0.7, 'rgba(230,70,120,0.14)'],
+      [1, 'rgba(230,70,120,0)'],
+    ]);
+    const spDust = makeGlow([
+      [0, 'rgba(10,6,10,0.9)'],
+      [0.55, 'rgba(14,8,12,0.4)'],
+      [1, 'rgba(14,8,12,0)'],
+    ]);
+
+    // --- Arm haze: unresolved starlight along the arms ----------------------
+    const haze: Haze[] = [];
+    for (let i = 0; i < 95; i++) {
+      const arm = pickArm();
+      const r = 0.08 + Math.pow(Math.random(), 1.1) * 0.9;
+      const width = 0.04 + 0.05 / (r + 0.25);
+      const theta = armTheta(r, arm.off) + gauss() * width;
+      let spr: HTMLCanvasElement;
+      if (r < 0.24) spr = spHazeWarm;
+      else spr = Math.random() < 0.3 ? spHazeCyan : spHazeBlue;
+      haze.push({
+        r,
+        theta,
+        z: gauss() * 0.012,
+        spr,
+        sizeFrac: rnd(0.04, 0.115) * (arm.major ? 1 : 0.72),
+        a: rnd(0.05, 0.13) * (arm.major ? 1 : 0.5),
+      });
+    }
+
+    // --- Dust lanes: dark clouds hugging the inner (concave) edge of arms ---
+    const dust: DustLane[] = [];
+    for (let i = 0; i < 130; i++) {
+      const arm = pickArm();
+      if (!arm.major && Math.random() < 0.7) continue;
+      const r = 0.15 + Math.pow(Math.random(), 1.1) * 0.78;
+      const width = 0.05 + 0.05 / (r + 0.25);
+      const theta = armTheta(r, arm.off) - width * (0.55 + Math.random() * 0.5) + gauss() * width * 0.25;
+      dust.push({
+        r,
+        theta,
+        sizeFrac: rnd(0.018, 0.05),
+        stretch: rnd(2.2, 3.8),
+        a: rnd(0.12, 0.26),
+      });
+    }
+    // A few big, diffuse dark patches to break up the disc's smoothness.
+    for (let i = 0; i < 9; i++) {
+      const arm = arms[(Math.random() * 2) | 0];
+      const r = rnd(0.25, 0.85);
+      dust.push({
+        r,
+        theta: armTheta(r, arm.off) - rnd(0.02, 0.09),
+        sizeFrac: rnd(0.07, 0.13),
+        stretch: rnd(1.6, 2.4),
+        a: rnd(0.06, 0.11),
+      });
+    }
+
+    // --- H-II regions: pink star-forming knots strung along the major arms --
+    const hii: HIIRegion[] = [];
+    for (let i = 0; i < 46; i++) {
+      const arm = arms[(Math.random() * 2) | 0];
+      const r = rnd(0.24, 0.96);
+      const width = 0.04 + 0.05 / (r + 0.25);
+      hii.push({
+        r,
+        theta: armTheta(r, arm.off) + gauss() * width * 0.45,
+        sizeFrac: rnd(0.008, 0.028),
+        a: rnd(0.22, 0.5),
+      });
+    }
+
+    // Moving outward along a log spiral advances theta by ln(r2/r1)/PITCH.
+    const D_THETA = Math.log(1.05) / PITCH;
 
     let galRot = 0;
     let lastT = performance.now();
@@ -625,49 +331,84 @@ export function useGalaxy(canvasRef: RefObject<HTMLCanvasElement>): void {
     const draw = (now: number) => {
       const dt = Math.min(0.05, (now - lastT) / 1000);
       lastT = now;
-      galRot -= dt * ROT_SPEED;
+      galRot -= dt * 0.05;
       ctx.clearRect(0, 0, W, H);
+      ctx.globalCompositeOperation = 'lighter';
 
-      // The baked disc, rotated in its own plane, then inclined and tilted.
+      // Smooth light: outer disc, bar and bulge, drawn in disc space so the
+      // glows share the stars' inclination and tilt.
       ctx.save();
       ctx.translate(cx, cy);
       ctx.rotate(TILT);
       ctx.scale(1, INCL);
-      ctx.rotate(galRot);
-      const s = R * EDGE;
-      ctx.drawImage(tex, -s, -s, s * 2, s * 2);
+      ctx.drawImage(spDisc, -R, -R, R * 2, R * 2);
+      ctx.save();
+      ctx.rotate(BAR_ANGLE + galRot);
+      ctx.scale(1, 0.42);
+      const bs = R * 0.3;
+      ctx.drawImage(spBar, -bs, -bs, bs * 2, bs * 2);
       ctx.restore();
-
-      ctx.globalCompositeOperation = 'lighter';
-
-      // Breathing bloom over the core.
+      ctx.restore();
+      // The bulge is rounder than the disc, so it gets a gentler squash.
       ctx.save();
       ctx.translate(cx, cy);
       ctx.rotate(TILT);
       ctx.scale(1, 0.74);
       const cs = R * 0.3;
-      ctx.globalAlpha = 0.4 + 0.08 * Math.sin(now * 0.00035);
       ctx.drawImage(spCore, -cs, -cs, cs * 2, cs * 2);
       ctx.restore();
 
+      for (const c of haze) {
+        const [X, Y] = project(c.r, c.theta + galRot, c.z);
+        const sz = c.sizeFrac * R;
+        ctx.globalAlpha = c.a;
+        ctx.drawImage(c.spr, X - sz, Y - sz, sz * 2, sz * 2);
+      }
+
       for (const p of pts) {
+        if (p.fg) continue;
         const [X, Y] = project(p.r, p.theta + galRot, p.z);
         const tw = 0.75 + 0.25 * Math.sin(now * 0.001 * p.tws + p.tw);
         ctx.globalAlpha = p.a * tw;
         ctx.fillStyle = `rgb(${p.col})`;
         ctx.beginPath();
-        ctx.arc(X, Y, p.size, 0, TAU);
+        ctx.arc(X, Y, p.size, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      for (const h of heroes) {
-        const [X, Y] = project(h.r, h.theta + galRot, h.z);
-        const tw = 0.7 + 0.3 * Math.sin(now * 0.001 * h.tws + h.tw);
-        ctx.globalAlpha = h.a * tw;
-        ctx.drawImage(h.spr, X - h.glow, Y - h.glow, h.glow * 2, h.glow * 2);
-        ctx.fillStyle = `rgb(${h.col})`;
+      // Dust lanes occlude, so they composite normally on top of the glow,
+      // each stretched along the local arm tangent.
+      ctx.globalCompositeOperation = 'source-over';
+      for (const d of dust) {
+        const ang = d.theta + galRot;
+        const [X1, Y1] = project(d.r, ang, 0);
+        const [X2, Y2] = project(d.r * 1.05, ang + D_THETA, 0);
+        const phi = Math.atan2(Y2 - Y1, X2 - X1);
+        const sz = d.sizeFrac * R;
+        ctx.save();
+        ctx.translate(X1, Y1);
+        ctx.rotate(phi);
+        ctx.globalAlpha = d.a;
+        ctx.drawImage(spDust, -sz * d.stretch, -sz, sz * d.stretch * 2, sz * 2);
+        ctx.restore();
+      }
+
+      // Star-forming regions and a layer of foreground stars sit above the dust.
+      ctx.globalCompositeOperation = 'lighter';
+      for (const h of hii) {
+        const [X, Y] = project(h.r, h.theta + galRot, 0);
+        const sz = h.sizeFrac * R;
+        ctx.globalAlpha = h.a;
+        ctx.drawImage(spHII, X - sz, Y - sz, sz * 2, sz * 2);
+      }
+      for (const p of pts) {
+        if (!p.fg) continue;
+        const [X, Y] = project(p.r, p.theta + galRot, p.z);
+        const tw = 0.75 + 0.25 * Math.sin(now * 0.001 * p.tws + p.tw);
+        ctx.globalAlpha = p.a * tw;
+        ctx.fillStyle = `rgb(${p.col})`;
         ctx.beginPath();
-        ctx.arc(X, Y, h.core, 0, TAU);
+        ctx.arc(X, Y, p.size, 0, Math.PI * 2);
         ctx.fill();
       }
 
