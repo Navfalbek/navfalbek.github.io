@@ -6,7 +6,7 @@ export function Footer() {
     <footer className={styles.footer}>
       <div className={styles.brand}>
         <span className={styles.dot} />
-        <span className={styles.label}>NAVFAL.M · END OF TRANSMISSION</span>
+        <span className={styles.label}>Navfal's Nebula · END OF TRANSMISSION</span>
       </div>
       <span className={styles.copy}>
         &copy; 2026 Navfal Makhfuzullaev — built among the stars
