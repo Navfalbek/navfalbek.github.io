@@ -45,7 +45,8 @@
   margin-top: 24px;
   font-size: clamp(15px, 1.8vw, 18px);
   line-height: 1.7;
-  color: #9fadcb;
+  color: #c7d3ec;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.6);
 }
 
 .links {

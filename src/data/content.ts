@@ -45,7 +45,9 @@ export const sections: NavSection[] = [
 
 export const socials: SocialLink[] = [
   { label: 'EMAIL ↗', href: 'mailto:navfalbek.uz@gmail.com', external: false },
+  { label: 'GITHUB ↗', href: 'https://github.com/Navfalbek', external: true },
   { label: 'LINKEDIN ↗', href: 'https://www.linkedin.com/in/navfalbek/', external: true },
+  { label: 'TELEGRAM ↗', href: 'https://t.me/navfalbekm', external: true },
   { label: 'INSTAGRAM ↗', href: 'https://www.instagram.com/navfalbek.m/', external: true },
   { label: 'X ↗', href: 'https://x.com/mnavfalbek', external: true },
 ];
@@ -56,7 +58,7 @@ export const facts: Fact[] = [
   { label: 'Location', value: 'Fergana, Uzbekistan' },
   { label: 'Age', value: '22' },
   { label: 'Currently', value: 'Preparing for an M.Sc. in Computer Science' },
-  { label: 'Interests', value: 'Space · Piano · Hiking · Traveling' },
+  { label: 'Interests', value: 'Space · Piano · Violin · Hiking · Running · Anime · Traveling' },
 ];
 
 export const education: TimelineEntry[] = [
@@ -166,20 +168,14 @@ export const projects: Project[] = [
 export const testimonials: Testimonial[] = [
   {
     quote:
-      'Add a recommendation here — a mentor, teammate, or colleague describing what it was like to work with you.',
-    name: 'Your reference',
-    role: 'Title · Company',
+      'Navfal is a great partner to work with. We worked with him in several projects in the university, and he always was one of the most active students contributed to the project. He is responsible and has a strict discipline.',
+    name: 'Shokhrukh Rustamov',
+    role: 'Project partner · Inha University',
   },
   {
     quote:
-      'A second short quote can sit here. Keep it focused on impact, collaboration, or a specific win.',
-    name: 'Your reference',
-    role: 'Title · Company',
-  },
-  {
-    quote:
-      'And a third. Three balanced cards read best — swap this copy for the real words when you have them.',
-    name: 'Your reference',
-    role: 'Title · Company',
+      'Navfal is an incredibly curious individual who approaches every goal with determination and persistence.',
+    name: 'Elbek Davron',
+    role: 'Friend & colleague',
   },
 ];

@@ -7,6 +7,28 @@
   margin: 0 auto;
 }
 
+.resume > * {
+  position: relative;
+  z-index: 1;
+}
+
+.resume::before {
+  content: '';
+  position: absolute;
+  inset: 60px 3vw;
+  z-index: 0;
+  border-radius: 24px;
+  background: radial-gradient(
+    120% 100% at 50% 0%,
+    rgba(10, 14, 30, 0.42),
+    rgba(6, 9, 22, 0.55)
+  );
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(120, 150, 220, 0.12);
+  pointer-events: none;
+}
+
 .heading {
   margin-bottom: 44px;
 }
@@ -71,7 +93,7 @@
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.1em;
-  color: #8ea0c8;
+  color: #aab8dc;
 }
 
 .title {
@@ -83,14 +105,16 @@
 
 .org {
   font-size: 14px;
-  color: #9fb0d4;
+  color: #bcc9e6;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.55);
   margin-bottom: 10px;
 }
 
 .detail {
   font-size: 13.5px;
   line-height: 1.7;
-  color: #8895b6;
+  color: #aebadb;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.55);
 }
 
 .points {
@@ -105,7 +129,8 @@
   padding-left: 16px;
   font-size: 13.5px;
   line-height: 1.65;
-  color: #8895b6;
+  color: #aebadb;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.55);
 }
 
 .point::before {
@@ -145,15 +170,15 @@
 }
 
 .tag.skill {
-  border: 1px solid rgba(95, 217, 255, 0.25);
-  background: rgba(95, 217, 255, 0.07);
-  color: #cfe6ff;
+  border: 1px solid rgba(95, 217, 255, 0.4);
+  background: rgba(95, 217, 255, 0.14);
+  color: #e2f3ff;
 }
 
 .tag.tool {
-  border: 1px solid rgba(168, 123, 255, 0.25);
-  background: rgba(168, 123, 255, 0.07);
-  color: #e0d3ff;
+  border: 1px solid rgba(168, 123, 255, 0.4);
+  background: rgba(168, 123, 255, 0.14);
+  color: #efe7ff;
 }
 
 @media (max-width: 768px) {

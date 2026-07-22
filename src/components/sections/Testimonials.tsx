@@ -7,7 +7,6 @@ export function Testimonials() {
     <section id="testimonials" className={styles.testimonials}>
       <SectionLabel accent="cyan">04 / TESTIMONIALS — SIGNALS FROM THE CREW</SectionLabel>
       <SectionHeading>Words from collaborators</SectionHeading>
-      <p className={styles.note}>// PLACEHOLDER — REPLACE WITH REAL RECOMMENDATIONS</p>
 
       <div className={styles.grid}>
         {testimonials.map((testimonial, i) => (
