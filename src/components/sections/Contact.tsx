@@ -1,4 +1,4 @@
-import { email, socials } from '../../data/content';
+import { email, locationLabel, locationUrl, resumeUrl, socials } from '../../data/content';
 import { PillLink } from '../ui/PillLink';
 import { SectionLabel } from '../ui/SectionHeader';
 import styles from './Contact.module.css';
@@ -18,6 +18,28 @@ export function Contact() {
       <a href={`mailto:${email}`} className={styles.email}>
         {email}
       </a>
+
+      <div className={styles.meta}>
+        <a
+          className={styles.metaLink}
+          href={locationUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          📍 {locationLabel}
+        </a>
+        <span className={styles.metaSep} aria-hidden="true">
+          ·
+        </span>
+        <a
+          className={styles.metaLink}
+          href={resumeUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Download résumé ↗
+        </a>
+      </div>
 
       <div className={styles.links}>
         {socials.map((link) => (

@@ -81,8 +81,122 @@
   box-shadow: 0 0 8px rgba(95, 217, 255, 0.6);
 }
 
+/* Hamburger — hidden until the inline links drop out at 768px. */
+.toggle {
+  display: none;
+  position: relative;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid rgba(120, 160, 255, 0.22);
+  border-radius: 10px;
+  background: rgba(120, 160, 255, 0.06);
+  cursor: pointer;
+}
+
+.bar {
+  position: absolute;
+  left: 50%;
+  width: 18px;
+  height: 1.6px;
+  margin-left: -9px;
+  border-radius: 2px;
+  background: #cddcff;
+  transition: transform 0.28s ease, opacity 0.2s ease;
+}
+
+.bar:nth-child(1) {
+  top: 14px;
+}
+.bar:nth-child(2) {
+  top: 20px;
+}
+.bar:nth-child(3) {
+  top: 26px;
+}
+
+.toggleOpen .bar:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+.toggleOpen .bar:nth-child(2) {
+  opacity: 0;
+}
+.toggleOpen .bar:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+.panel {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  flex-direction: column;
+  padding: 10px 5vw 18px;
+  background: rgba(5, 8, 18, 0.96);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(120, 160, 255, 0.16);
+}
+
+.panelBtn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 15px 6px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid rgba(120, 160, 255, 0.08);
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  letter-spacing: 0.14em;
+  color: #b9c6e4;
+  transition: color 0.2s;
+}
+
+.panelBtn:last-child {
+  border-bottom: none;
+}
+
+.panelBtn.active,
+.panelBtn:hover {
+  color: var(--cyan);
+}
+
+.panelIndex {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: #5c6b8f;
+}
+
+.panelBtn.active .panelIndex {
+  color: var(--purple);
+}
+
 @media (max-width: 768px) {
   .links {
     display: none;
+  }
+
+  .toggle {
+    display: block;
+  }
+
+  .panel.panelOpen {
+    display: flex;
+    animation: panelIn 0.22s ease;
+  }
+}
+
+@keyframes panelIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

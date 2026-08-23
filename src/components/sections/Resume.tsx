@@ -1,4 +1,11 @@
-import { education, experience, skills, tools, type TimelineEntry } from '../../data/content';
+import {
+  education,
+  experience,
+  resumeUrl,
+  skills,
+  tools,
+  type TimelineEntry,
+} from '../../data/content';
 import { SectionHeading, SectionLabel } from '../ui/SectionHeader';
 import styles from './Resume.module.css';
 
@@ -62,6 +69,15 @@ export function Resume() {
           </span>
         ))}
       </div>
+
+      <a
+        className={styles.download}
+        href={resumeUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Download the full résumé ↗
+      </a>
     </section>
   );
 }

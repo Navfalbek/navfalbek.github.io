@@ -6,9 +6,9 @@
   --purple: #a87bff;
   --pink: #ff7ac4;
 
-  /* Fonts */
-  --font-display: 'Space Grotesk', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  /* Fonts — self-hosted variable faces, see main.tsx */
+  --font-display: 'Space Grotesk Variable', 'Space Grotesk', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, monospace;
 
   /* Surfaces */
   --glass-bg: rgba(11, 17, 33, 0.55);
@@ -42,6 +42,18 @@ body {
 ::selection {
   background: rgba(95, 217, 255, 0.3);
   color: #fff;
+}
+
+/* The default focus ring is nearly invisible on this backdrop. */
+:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Only a skip-link target — never show a ring for it. */
+main:focus {
+  outline: none;
 }
 
 /* Shared keyframes used across components */

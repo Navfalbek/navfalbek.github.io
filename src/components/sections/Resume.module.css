@@ -181,6 +181,30 @@
   color: #efe7ff;
 }
 
+.download {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 20px;
+  padding: 12px 22px;
+  border-radius: 999px;
+  border: 1px solid rgba(168, 123, 255, 0.45);
+  background: rgba(168, 123, 255, 0.1);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: #e8dcff;
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
+}
+
+.download:hover,
+.download:focus-visible {
+  transform: translateY(-2px);
+  color: #fff;
+  border-color: var(--purple);
+  background: rgba(168, 123, 255, 0.2);
+}
+
 @media (max-width: 768px) {
   .grid {
     grid-template-columns: 1fr;

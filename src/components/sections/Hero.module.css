@@ -49,12 +49,95 @@
   text-shadow: 0 1px 12px rgba(0, 0, 0, 0.6);
 }
 
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
+  margin-top: 36px;
+}
+
+.primary,
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 13px 26px;
+  border-radius: 999px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s, border-color 0.2s;
+}
+
+.primary {
+  color: #05121f;
+  border: 1px solid transparent;
+  background: linear-gradient(118deg, #8fe4ff, #b69bff);
+  box-shadow: 0 6px 26px rgba(95, 217, 255, 0.28);
+}
+
+.primary:hover,
+.primary:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 34px rgba(95, 217, 255, 0.42);
+}
+
+/* Download glyph: a stem with an arrowhead, drawn without an icon dependency. */
+.primaryIcon {
+  position: relative;
+  width: 13px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.primaryIcon::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 1.6px;
+  height: 9px;
+  margin-left: -0.8px;
+  background: currentColor;
+}
+
+.primaryIcon::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 3px;
+  width: 7px;
+  height: 7px;
+  margin-left: -3.5px;
+  border-right: 1.6px solid currentColor;
+  border-bottom: 1.6px solid currentColor;
+  transform: rotate(45deg);
+}
+
+.secondary {
+  color: #dce6ff;
+  background: rgba(120, 160, 255, 0.06);
+  border: 1px solid rgba(120, 160, 255, 0.32);
+}
+
+.secondary:hover,
+.secondary:focus-visible {
+  transform: translateY(-2px);
+  color: #fff;
+  border-color: var(--cyan);
+  background: rgba(95, 217, 255, 0.12);
+}
+
 .links {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
   justify-content: center;
-  margin-top: 38px;
+  margin-top: 28px;
 }
 
 .scrollHint {

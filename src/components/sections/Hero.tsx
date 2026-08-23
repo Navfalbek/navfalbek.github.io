@@ -1,4 +1,5 @@
-import { socials } from '../../data/content';
+import { resumeUrl, socials } from '../../data/content';
+import { scrollToSection } from '../../lib/scroll';
 import { PillLink } from '../ui/PillLink';
 import styles from './Hero.module.css';
 
@@ -14,6 +15,21 @@ export function Hero() {
         Computer Science graduate charting a course through machine learning and data — with a
         lifelong fascination for the nebulae where stars are born.
       </p>
+
+      <div className={styles.actions}>
+        <a
+          className={styles.primary}
+          href={resumeUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span className={styles.primaryIcon} aria-hidden="true" />
+          Résumé
+        </a>
+        <button className={styles.secondary} onClick={() => scrollToSection('contact')}>
+          Get in touch
+        </button>
+      </div>
 
       <div className={styles.links}>
         {socials.map((link) => (

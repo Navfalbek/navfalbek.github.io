@@ -1,0 +1,48 @@
+name: Deploy to navfalbek.github.io
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Never let two deploys race for the published branch.
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      # Publishes the built site to the user-page repo, which serves it at
+      # https://navfalbek.github.io/. Requires a repo-scoped PAT stored in this
+      # repository as the PAGES_TOKEN secret.
+      - name: Publish
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          personal_token: ${{ secrets.PAGES_TOKEN }}
+          external_repository: Navfalbek/navfalbek.github.io
+          publish_branch: main
+          publish_dir: ./dist
+          commit_message: 'deploy: ${{ github.sha }}'

@@ -51,10 +51,37 @@
   color: #9fe6ff;
 }
 
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 22px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+}
+
+.metaLink {
+  color: #a9b8d6;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.metaLink:hover,
+.metaLink:focus-visible {
+  color: var(--cyan);
+}
+
+.metaSep {
+  color: #4d5a78;
+}
+
 .links {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
   justify-content: center;
-  margin-top: 36px;
+  margin-top: 32px;
 }

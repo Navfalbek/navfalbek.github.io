@@ -10,6 +10,22 @@ export function About() {
 
       <div className={styles.grid}>
         <div className={`glass ${styles.bio}`}>
+          <div className={styles.identity}>
+            <img
+              className={styles.avatar}
+              src="/profile.webp"
+              alt="Navfal Makhfuzullaev"
+              width={640}
+              height={640}
+              loading="lazy"
+              decoding="async"
+            />
+            <div>
+              <div className={styles.identityName}>Navfal Makhfuzullaev</div>
+              <div className={styles.identityRole}>Data Analyst · ML &amp; Space</div>
+            </div>
+          </div>
+
           <p>
             Hello, crew. I'm <strong>Navfal Makhfuzullaev</strong> — a Computer Science graduate
             from Inha University in Tashkent, drawn to the physics of space and to nebulae, the
@@ -27,7 +43,20 @@ export function About() {
           {facts.map((fact) => (
             <div className={styles.fact} key={fact.label}>
               <div className={styles.factLabel}>{fact.label}</div>
-              <div className={styles.factValue}>{fact.value}</div>
+              <div className={styles.factValue}>
+                {fact.href ? (
+                  <a
+                    className={styles.factLink}
+                    href={fact.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {fact.value} ↗
+                  </a>
+                ) : (
+                  fact.value
+                )}
+              </div>
             </div>
           ))}
         </div>

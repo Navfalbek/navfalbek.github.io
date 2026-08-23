@@ -11,6 +11,9 @@ dist
 dist-ssr
 *.local
 
+# TypeScript incremental build state
+*.tsbuildinfo
+
 # Editor
 .vscode/*
 !.vscode/extensions.json

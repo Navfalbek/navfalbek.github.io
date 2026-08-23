@@ -1,4 +1,5 @@
 import { useEffect, type RefObject } from 'react';
+import { runAnimation, type Animation } from '../lib/motion';
 import { loadPlate } from '../lib/plate';
 
 // Photoreal nebula plates (generated with Higgsfield, decoded to additive
@@ -78,6 +79,8 @@ export function useNebula(canvasRef: RefObject<HTMLCanvasElement>): void {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    let anim: Animation | null = null;
+
     // One decode per unique file; defs sharing a src share the sprite.
     const srcs = Array.from(new Set(NEBULAE.map((n) => n.src)));
     const sprites = new Map<string, HTMLCanvasElement>();
@@ -85,7 +88,9 @@ export function useNebula(canvasRef: RefObject<HTMLCanvasElement>): void {
     for (const src of srcs) {
       loadPlate(src, 0.8)
         .then((sprite) => {
-          if (!disposed) sprites.set(src, sprite);
+          if (disposed) return;
+          sprites.set(src, sprite);
+          anim?.redraw();
         })
         .catch(() => {
           /* cloud simply stays absent */
@@ -100,10 +105,10 @@ export function useNebula(canvasRef: RefObject<HTMLCanvasElement>): void {
       H = canvas.height = Math.floor(window.innerHeight * dpr);
       canvas.style.width = window.innerWidth + 'px';
       canvas.style.height = window.innerHeight + 'px';
+      anim?.redraw();
     };
     resize();
 
-    let raf = 0;
     const draw = (now: number) => {
       const t = now * 0.001;
       ctx.clearRect(0, 0, W, H);
@@ -141,15 +146,14 @@ export function useNebula(canvasRef: RefObject<HTMLCanvasElement>): void {
 
       ctx.globalAlpha = 1;
       ctx.globalCompositeOperation = 'source-over';
-      raf = requestAnimationFrame(draw);
     };
 
     window.addEventListener('resize', resize);
-    raf = requestAnimationFrame(draw);
+    anim = runAnimation(draw);
 
     return () => {
       disposed = true;
-      cancelAnimationFrame(raf);
+      anim?.stop();
       window.removeEventListener('resize', resize);
     };
   }, [canvasRef]);

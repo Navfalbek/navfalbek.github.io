@@ -1,12 +1,19 @@
 import { sections } from '../data/content';
 
-const NAV_OFFSET = 62;
+const NAV_OFFSET_FALLBACK = 62;
+
+/** Height of the fixed nav, read from `--nav-h` so the two can't drift apart. */
+function navOffset(): number {
+  const raw = getComputedStyle(document.documentElement).getPropertyValue('--nav-h');
+  const parsed = parseFloat(raw);
+  return Number.isFinite(parsed) ? parsed : NAV_OFFSET_FALLBACK;
+}
 
 /** Smooth-scroll to a section by id, accounting for the fixed nav height. */
 export function scrollToSection(id: string): void {
   const el = document.getElementById(id);
   if (!el) return;
-  const top = el.getBoundingClientRect().top + window.scrollY - NAV_OFFSET;
+  const top = el.getBoundingClientRect().top + window.scrollY - navOffset();
   window.scrollTo({ top, behavior: 'smooth' });
 }
 

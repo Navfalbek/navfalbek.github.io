@@ -16,12 +16,16 @@ export default function App() {
 
   return (
     <div className={styles.wrapper}>
+      <a className={styles.skipLink} href="#main">
+        Skip to content
+      </a>
+
       <Background galaxyLayerRef={galaxyLayerRef} nebulaLayerRef={nebulaLayerRef} />
 
       <Nav activeIndex={activeIndex} scrollBarRef={scrollBarRef} />
       <DotRail activeIndex={activeIndex} />
 
-      <main>
+      <main id="main" tabIndex={-1}>
         <Hero />
         <About />
         <Resume />

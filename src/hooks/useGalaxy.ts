@@ -1,4 +1,5 @@
 import { useEffect, type RefObject } from 'react';
+import { runAnimation, prefersReducedMotion, type Animation } from '../lib/motion';
 import { loadPlate } from '../lib/plate';
 
 // A single photoreal Milky-Way plate (generated face-on with Higgsfield,
@@ -23,6 +24,9 @@ export function useGalaxy(canvasRef: RefObject<HTMLCanvasElement>): void {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    const reduced = prefersReducedMotion();
+    let anim: Animation | null = null;
+
     let W = 0;
     let H = 0;
     let cx = 0;
@@ -38,6 +42,7 @@ export function useGalaxy(canvasRef: RefObject<HTMLCanvasElement>): void {
       cx = W / 2;
       cy = H * 0.46;
       R = Math.max(W, H) * 0.58;
+      anim?.redraw();
     };
     resize();
 
@@ -47,6 +52,7 @@ export function useGalaxy(canvasRef: RefObject<HTMLCanvasElement>): void {
       .then((p) => {
         plate = p;
         plateAt = performance.now();
+        anim?.redraw();
       })
       .catch(() => {
         /* starfield layers still cover the backdrop */
@@ -54,16 +60,17 @@ export function useGalaxy(canvasRef: RefObject<HTMLCanvasElement>): void {
 
     let galRot = 0;
     let lastT = performance.now();
-    let raf = 0;
 
     const draw = (now: number) => {
+      // `dt` is clamped so a tab resumed from the background doesn't jump the
+      // disc forward by however long it was hidden.
       const dt = Math.min(0.05, (now - lastT) / 1000);
       lastT = now;
       galRot += dt * ROT_SPEED;
 
       ctx.clearRect(0, 0, W, H);
       if (plate) {
-        const fade = Math.min(1, (now - plateAt) / 1000 / FADE_IN);
+        const fade = reduced ? 1 : Math.min(1, (now - plateAt) / 1000 / FADE_IN);
         const size = R / PLATE_FILL;
         ctx.globalCompositeOperation = 'lighter';
         ctx.save();
@@ -77,14 +84,13 @@ export function useGalaxy(canvasRef: RefObject<HTMLCanvasElement>): void {
         ctx.globalAlpha = 1;
         ctx.globalCompositeOperation = 'source-over';
       }
-      raf = requestAnimationFrame(draw);
     };
 
     window.addEventListener('resize', resize);
-    raf = requestAnimationFrame(draw);
+    anim = runAnimation(draw);
 
     return () => {
-      cancelAnimationFrame(raf);
+      anim?.stop();
       window.removeEventListener('resize', resize);
     };
   }, [canvasRef]);

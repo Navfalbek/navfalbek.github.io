@@ -9,7 +9,7 @@ export function Footer() {
         <span className={styles.label}>Navfal's Nebula · END OF TRANSMISSION</span>
       </div>
       <span className={styles.copy}>
-        &copy; 2026 Navfal Makhfuzullaev — built among the stars
+        &copy; {new Date().getFullYear()} Navfal Makhfuzullaev — built among the stars
       </span>
       <button className={styles.btn} onClick={scrollToTop}>
         ↑ BACK TO ORBIT
