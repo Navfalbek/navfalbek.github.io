@@ -1,20 +1,22 @@
-name: Deploy to navfalbek.github.io
+name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
+  pages: write
+  id-token: write
 
-# Never let two deploys race for the published branch.
+# Let a running deploy finish rather than cancelling it mid-publish.
 concurrency:
-  group: deploy
+  group: pages
   cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -35,14 +37,18 @@ jobs:
       - name: Build
         run: npm run build
 
-      # Publishes the built site to the user-page repo, which serves it at
-      # https://navfalbek.github.io/. Requires a repo-scoped PAT stored in this
-      # repository as the PAGES_TOKEN secret.
-      - name: Publish
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          personal_token: ${{ secrets.PAGES_TOKEN }}
-          external_repository: Navfalbek/navfalbek.github.io
-          publish_branch: main
-          publish_dir: ./dist
-          commit_message: 'deploy: ${{ github.sha }}'
+          path: ./dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

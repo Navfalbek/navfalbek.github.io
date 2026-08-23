@@ -63,7 +63,7 @@ export const socials: SocialLink[] = [
 export const email = 'navfalbek.uz@gmail.com';
 
 /** Canonical origin — used for structured data and share cards. */
-export const siteUrl = 'https://navfalbek.github.io';
+export const siteUrl = 'https://navfalbek.uz';
 
 /** Résumé PDF (Google Drive). */
 export const resumeUrl =

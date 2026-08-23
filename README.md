@@ -59,18 +59,24 @@ what the site shows; no component edits required.
 
 ## Deployment
 
-`.github/workflows/deploy.yml` builds on every push to `master` and publishes
-`dist/` to the **`Navfalbek/navfalbek.github.io`** repo, which GitHub serves at
-<https://navfalbek.github.io/>.
+This is the source of <https://navfalbek.uz/>, served by GitHub Pages from the
+`Navfalbek/navfalbek.github.io` repository.
 
-Before the first run, add a repo-scoped
-[personal access token](https://github.com/settings/tokens) to this repository as
-the secret **`PAGES_TOKEN`** (Settings → Secrets and variables → Actions). The
-workflow force-replaces the contents of the `main` branch on the user-page repo,
-so make sure nothing else lives there that you want to keep.
+`.github/workflows/deploy.yml` builds on every push to `main` and publishes
+`dist/` with `actions/deploy-pages`. It uses the built-in `GITHUB_TOKEN` — no
+secrets to configure. The repo's Pages setting must stay on
+**Build and deployment → Source: GitHub Actions**.
 
-Deployment URLs are baked into `index.html` (canonical, Open Graph) and
-`src/data/content.ts` (`siteUrl`). Change both if the site ever moves.
+`public/CNAME` pins the custom domain so it survives a redeploy.
+
+The origin is baked into four places — change all of them if the site ever moves:
+
+| File | What |
+|---|---|
+| `index.html` | canonical, `og:url`, `og:image`, JSON-LD |
+| `src/data/content.ts` | `siteUrl` |
+| `public/sitemap.xml` | `<loc>` |
+| `public/robots.txt` | `Sitemap:` |
 
 ## Notes
 
