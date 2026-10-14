@@ -1,7 +1,6 @@
 import classNames from 'classnames';
-import {FC, memo, UIEventHandler, useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {FC, memo, UIEventHandler, useCallback, useEffect, useRef, useState} from 'react';
 
-import {isApple, isMobile} from '../../config';
 import {SectionId, testimonial} from '../../data/data';
 import type {Testimonial} from '../../data/dataDef';
 import useInterval from '../../hooks/useInterval';
@@ -12,24 +11,13 @@ import Section from '../Layout/Section';
 const Testimonials: FC = memo(() => {
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const [scrollValue, setScrollValue] = useState(0);
-  const [parallaxEnabled, setParallaxEnabled] = useState(false);
 
   const itemWidth = useRef(0);
   const scrollContainer = useRef<HTMLDivElement>(null);
 
   const {width} = useWindow();
 
-  const {imageSrc, testimonials} = testimonial;
-
-  const resolveSrc = useMemo(() => {
-    if (!imageSrc) return undefined;
-    return typeof imageSrc === 'string' ? imageSrc : imageSrc.src;
-  }, [imageSrc]);
-
-  // Mobile iOS doesn't allow background-fixed elements
-  useEffect(() => {
-    setParallaxEnabled(!(isMobile && isApple));
-  }, []);
+  const {testimonials} = testimonial;
 
   useEffect(() => {
     itemWidth.current = scrollContainer.current ? scrollContainer.current.offsetWidth : 0;
@@ -71,13 +59,8 @@ const Testimonials: FC = memo(() => {
 
   return (
     <Section noPadding sectionId={SectionId.Testimonials}>
-      <div
-        className={classNames(
-          'flex w-full items-center justify-center bg-cover bg-center px-4 py-16 md:py-24 lg:px-8',
-          parallaxEnabled && 'bg-fixed',
-          {'bg-neutral-700': !imageSrc},
-        )}
-        style={imageSrc ? {backgroundImage: `url(${resolveSrc}`} : undefined}>
+      {/* transparent: the page-wide galaxy background shows through here */}
+      <div className="flex w-full items-center justify-center px-4 py-16 md:py-24 lg:px-8">
         <div className="z-10 w-full max-w-screen-md px-4 lg:px-0">
           <div className="flex flex-col items-center gap-y-6 rounded-xl bg-gray-800/60 p-6 shadow-lg">
             <div
