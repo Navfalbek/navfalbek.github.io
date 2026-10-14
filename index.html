@@ -36,8 +36,9 @@
     <meta name="twitter:site" content="@mnavfalbek" />
     <meta name="twitter:creator" content="@mnavfalbek" />
 
-    <!-- The galaxy plate is the first thing painted; fetch it with the HTML. -->
-    <link rel="preload" as="image" href="/space/galaxy.webp" type="image/webp" fetchpriority="high" />
+    <!-- The galaxy disc texture is the first thing painted; fetch it with the HTML.
+         crossorigin matches three.js's TextureLoader, so the preload is reused. -->
+    <link rel="preload" as="image" href="/space/milkyway/galaxy_2k.webp" type="image/webp" fetchpriority="high" crossorigin="anonymous" />
 
     <script type="application/ld+json">
       {

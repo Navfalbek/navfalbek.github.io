@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type RefObject } from 'react';
 import { activeSectionIndex } from '../lib/scroll';
 
 interface ScrollScene {
-  /** Wrapper around the galaxy canvas — faded/zoomed as you scroll in. */
+  /** Wrapper around the galaxy canvas — dimmed slightly as you scroll in. */
   galaxyLayerRef: RefObject<HTMLDivElement>;
   /** Wrapper around the nebula blobs — revealed as you scroll in. */
   nebulaLayerRef: RefObject<HTMLDivElement>;
@@ -13,8 +13,8 @@ interface ScrollScene {
 }
 
 /**
- * Drives the scroll-reactive backdrop: the galaxy fades out and zooms past the
- * viewer while the nebula clouds bloom into view. DOM is mutated directly via
+ * Drives the scroll-reactive backdrop: the galaxy dims slightly (its own 3D
+ * camera flies in, see useGalaxy) while the nebula clouds bloom into view. DOM is mutated directly via
  * refs (rather than React state) so scrolling stays at 60fps; only the active
  * section index — which changes rarely — flows through state.
  */
@@ -36,10 +36,11 @@ export function useScrollScene(): ScrollScene {
         scrollBarRef.current.style.width = (p * 100).toFixed(2) + '%';
       }
 
+      // The 3D galaxy flies its own camera in as you scroll (see useGalaxy), so the
+      // layer is no longer scaled; it only dims a little to keep the copy readable.
       const g = Math.min(1, p / 0.34);
       if (galaxyLayerRef.current) {
-        galaxyLayerRef.current.style.opacity = (1 - g * 0.95).toFixed(3);
-        galaxyLayerRef.current.style.transform = `scale(${(1 + g * 3.4).toFixed(3)})`;
+        galaxyLayerRef.current.style.opacity = (1 - g * 0.3).toFixed(3);
       }
 
       if (nebulaLayerRef.current) {
