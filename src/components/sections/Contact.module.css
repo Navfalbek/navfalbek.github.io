@@ -20,7 +20,7 @@
   font-size: clamp(34px, 5.5vw, 68px);
   letter-spacing: -0.025em;
   line-height: 1.02;
-  background: linear-gradient(118deg, #ffffff, #9fd8ff 42%, #b69bff);
+  background: linear-gradient(118deg, #ffffff, #cfcfcf 42%, #cdcdcd);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -32,7 +32,7 @@
   margin-top: 22px;
   font-size: clamp(15px, 1.8vw, 18px);
   line-height: 1.7;
-  color: #9fadcb;
+  color: #b5b5b5;
 }
 
 .email {
@@ -42,13 +42,13 @@
   color: var(--cyan);
   text-decoration: none;
   margin-top: 30px;
-  border-bottom: 1px solid rgba(95, 217, 255, 0.4);
+  border-bottom: 1px solid rgba(251, 146, 60, 0.4);
   padding-bottom: 4px;
   transition: color 0.2s;
 }
 
 .email:hover {
-  color: #9fe6ff;
+  color: #cfcfcf;
 }
 
 .meta {
@@ -64,7 +64,7 @@
 }
 
 .metaLink {
-  color: #a9b8d6;
+  color: #c0c0c0;
   text-decoration: none;
   transition: color 0.2s;
 }
@@ -75,7 +75,7 @@
 }
 
 .metaSep {
-  color: #4d5a78;
+  color: #626262;
 }
 
 .links {

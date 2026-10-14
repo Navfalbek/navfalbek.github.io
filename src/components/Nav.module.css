@@ -8,9 +8,9 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px 5vw;
-  background: linear-gradient(180deg, rgba(5, 8, 18, 0.92), rgba(5, 8, 18, 0.15));
+  background: linear-gradient(180deg, rgba(12, 12, 12, 0.92), rgba(12, 12, 12, 0.15));
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(120, 160, 255, 0.12);
+  border-bottom: 1px solid rgba(188, 188, 188, 0.12);
 }
 
 .logo {
@@ -27,7 +27,7 @@
   width: 11px;
   height: 11px;
   border-radius: 50%;
-  background: radial-gradient(circle at 32% 30%, #bdf0ff, #3a7bff);
+  background: radial-gradient(circle at 32% 30%, #dedede, #f97316);
   box-shadow: 0 0 14px var(--cyan);
   display: block;
   flex-shrink: 0;
@@ -38,7 +38,7 @@
   font-weight: 600;
   font-size: 16px;
   letter-spacing: 0.06em;
-  color: #eaf0ff;
+  color: #f4f4f4;
 }
 
 .wordmark em {
@@ -59,7 +59,7 @@
   font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0.12em;
-  color: #a9b6d4;
+  color: #bfbfbf;
   padding: 8px 12px;
   border-radius: 8px;
   transition: color 0.2s, background 0.2s;
@@ -68,7 +68,7 @@
 .btn:hover,
 .btn.active {
   color: var(--cyan);
-  background: rgba(95, 217, 255, 0.08);
+  background: rgba(175, 175, 175, 0.08);
 }
 
 .scrollBar {
@@ -78,7 +78,7 @@
   height: 2px;
   width: 0%;
   background: linear-gradient(90deg, var(--cyan), var(--purple));
-  box-shadow: 0 0 8px rgba(95, 217, 255, 0.6);
+  box-shadow: 0 0 8px rgba(251, 146, 60, 0.6);
 }
 
 /* Hamburger — hidden until the inline links drop out at 768px. */
@@ -88,9 +88,9 @@
   width: 42px;
   height: 42px;
   padding: 0;
-  border: 1px solid rgba(120, 160, 255, 0.22);
+  border: 1px solid rgba(188, 188, 188, 0.22);
   border-radius: 10px;
-  background: rgba(120, 160, 255, 0.06);
+  background: rgba(188, 188, 188, 0.06);
   cursor: pointer;
 }
 
@@ -101,7 +101,7 @@
   height: 1.6px;
   margin-left: -9px;
   border-radius: 2px;
-  background: #cddcff;
+  background: #e6e6e6;
   transition: transform 0.28s ease, opacity 0.2s ease;
 }
 
@@ -133,9 +133,9 @@
   right: 0;
   flex-direction: column;
   padding: 10px 5vw 18px;
-  background: rgba(5, 8, 18, 0.96);
+  background: rgba(12, 12, 12, 0.96);
   backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(120, 160, 255, 0.16);
+  border-bottom: 1px solid rgba(188, 188, 188, 0.16);
 }
 
 .panelBtn {
@@ -146,13 +146,13 @@
   padding: 15px 6px;
   background: none;
   border: none;
-  border-bottom: 1px solid rgba(120, 160, 255, 0.08);
+  border-bottom: 1px solid rgba(188, 188, 188, 0.08);
   cursor: pointer;
   text-align: left;
   font-family: var(--font-mono);
   font-size: 14px;
   letter-spacing: 0.14em;
-  color: #b9c6e4;
+  color: #cfcfcf;
   transition: color 0.2s;
 }
 
@@ -168,7 +168,7 @@
 .panelIndex {
   font-size: 10px;
   letter-spacing: 0.2em;
-  color: #5c6b8f;
+  color: #767676;
 }
 
 .panelBtn.active .panelIndex {

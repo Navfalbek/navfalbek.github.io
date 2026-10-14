@@ -1,7 +1,7 @@
 .wrapper {
   position: relative;
   min-height: 100vh;
-  background: radial-gradient(ellipse at 50% -10%, #0a1326 0%, #060a16 45%, #04060e 100%);
+  background: radial-gradient(ellipse at 50% -10%, #181818 0%, #0e0e0e 45%, #090909 100%);
   color: var(--text);
   overflow-x: hidden;
 }
@@ -15,7 +15,7 @@
   padding: 11px 18px;
   border-radius: 0 0 10px 10px;
   background: var(--cyan);
-  color: #04060e;
+  color: #090909;
   font-family: var(--font-mono);
   font-size: 13px;
   letter-spacing: 0.08em;

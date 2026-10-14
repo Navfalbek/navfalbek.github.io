@@ -12,7 +12,7 @@ import { useScrollScene } from './hooks/useScrollScene';
 import styles from './App.module.css';
 
 export default function App() {
-  const { galaxyLayerRef, nebulaLayerRef, scrollBarRef, activeIndex } = useScrollScene();
+  const { galaxyLayerRef, scrollBarRef, activeIndex } = useScrollScene();
 
   return (
     <div className={styles.wrapper}>
@@ -20,7 +20,7 @@ export default function App() {
         Skip to content
       </a>
 
-      <Background galaxyLayerRef={galaxyLayerRef} nebulaLayerRef={nebulaLayerRef} />
+      <Background galaxyLayerRef={galaxyLayerRef} />
 
       <Nav activeIndex={activeIndex} scrollBarRef={scrollBarRef} />
       <DotRail activeIndex={activeIndex} />

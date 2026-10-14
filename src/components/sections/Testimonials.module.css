@@ -14,7 +14,7 @@
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.14em;
-  color: #6f7d9e;
+  color: #878787;
   margin: 10px 0 40px;
 }
 
@@ -39,13 +39,13 @@
   font-family: var(--font-display);
   font-size: 48px;
   line-height: 0.6;
-  color: rgba(95, 217, 255, 0.4);
+  color: rgba(251, 146, 60, 0.4);
 }
 
 .quote {
   font-size: 15px;
   line-height: 1.75;
-  color: #c0cbe6;
+  color: #d3d3d3;
   font-style: italic;
 }
 
@@ -60,18 +60,18 @@
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: radial-gradient(circle at 32% 30%, #6fd2ff, #5b3aa0);
+  background: radial-gradient(circle at 32% 30%, #fb923c, #6d6d6d);
   flex-shrink: 0;
 }
 
 .name {
   font-size: 14px;
   font-weight: 600;
-  color: #eaf0ff;
+  color: #f4f4f4;
 }
 
 .role {
   font-family: var(--font-mono);
   font-size: 11px;
-  color: #8895b6;
+  color: #9f9f9f;
 }

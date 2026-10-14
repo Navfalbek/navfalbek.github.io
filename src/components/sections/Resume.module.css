@@ -20,12 +20,12 @@
   border-radius: 24px;
   background: radial-gradient(
     120% 100% at 50% 0%,
-    rgba(10, 14, 30, 0.42),
-    rgba(6, 9, 22, 0.55)
+    rgba(20, 20, 20, 0.42),
+    rgba(14, 14, 14, 0.55)
   );
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
-  border: 1px solid rgba(120, 150, 220, 0.12);
+  border: 1px solid rgba(170, 170, 170, 0.12);
   pointer-events: none;
 }
 
@@ -62,11 +62,11 @@
 }
 
 .item.blue {
-  border-left: 1px solid rgba(120, 160, 255, 0.22);
+  border-left: 1px solid rgba(188, 188, 188, 0.22);
 }
 
 .item.purple {
-  border-left: 1px solid rgba(160, 120, 255, 0.22);
+  border-left: 1px solid rgba(188, 188, 188, 0.22);
 }
 
 .itemDot {
@@ -93,19 +93,19 @@
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.1em;
-  color: #aab8dc;
+  color: #c3c3c3;
 }
 
 .title {
   font-size: 17px;
   font-weight: 600;
-  color: #f2f6ff;
+  color: #f9f9f9;
   margin: 6px 0 3px;
 }
 
 .org {
   font-size: 14px;
-  color: #bcc9e6;
+  color: #d1d1d1;
   text-shadow: 0 1px 10px rgba(0, 0, 0, 0.55);
   margin-bottom: 10px;
 }
@@ -113,7 +113,7 @@
 .detail {
   font-size: 13.5px;
   line-height: 1.7;
-  color: #aebadb;
+  color: #c4c4c4;
   text-shadow: 0 1px 10px rgba(0, 0, 0, 0.55);
 }
 
@@ -129,7 +129,7 @@
   padding-left: 16px;
   font-size: 13.5px;
   line-height: 1.65;
-  color: #aebadb;
+  color: #c4c4c4;
   text-shadow: 0 1px 10px rgba(0, 0, 0, 0.55);
 }
 
@@ -170,15 +170,15 @@
 }
 
 .tag.skill {
-  border: 1px solid rgba(95, 217, 255, 0.4);
-  background: rgba(95, 217, 255, 0.14);
-  color: #e2f3ff;
+  border: 1px solid rgba(251, 146, 60, 0.4);
+  background: rgba(175, 175, 175, 0.14);
+  color: #f1f1f1;
 }
 
 .tag.tool {
-  border: 1px solid rgba(168, 123, 255, 0.4);
-  background: rgba(168, 123, 255, 0.14);
-  color: #efe7ff;
+  border: 1px solid rgba(253, 186, 116, 0.4);
+  background: rgba(189, 189, 189, 0.14);
+  color: #f3f3f3;
 }
 
 .download {
@@ -187,12 +187,12 @@
   margin-top: 20px;
   padding: 12px 22px;
   border-radius: 999px;
-  border: 1px solid rgba(168, 123, 255, 0.45);
-  background: rgba(168, 123, 255, 0.1);
+  border: 1px solid rgba(253, 186, 116, 0.45);
+  background: rgba(189, 189, 189, 0.1);
   font-family: var(--font-mono);
   font-size: 13px;
   letter-spacing: 0.08em;
-  color: #e8dcff;
+  color: #eeeeee;
   text-decoration: none;
   transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
 }
@@ -202,7 +202,7 @@
   transform: translateY(-2px);
   color: #fff;
   border-color: var(--purple);
-  background: rgba(168, 123, 255, 0.2);
+  background: rgba(189, 189, 189, 0.2);
 }
 
 @media (max-width: 768px) {

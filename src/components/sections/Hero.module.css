@@ -24,7 +24,7 @@
   font-size: clamp(46px, 9vw, 116px);
   line-height: 0.98;
   letter-spacing: -0.025em;
-  background: linear-gradient(118deg, #ffffff, #9fd8ff 42%, #b69bff);
+  background: linear-gradient(118deg, #ffffff, #cfcfcf 42%, #cdcdcd);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -35,7 +35,7 @@
   font-family: var(--font-mono);
   font-size: clamp(13px, 1.6vw, 16px);
   letter-spacing: 0.22em;
-  color: #cdd8f2;
+  color: #e0e0e0;
   margin-top: 26px;
   text-transform: uppercase;
 }
@@ -45,7 +45,7 @@
   margin-top: 24px;
   font-size: clamp(15px, 1.8vw, 18px);
   line-height: 1.7;
-  color: #c7d3ec;
+  color: #dadada;
   text-shadow: 0 1px 12px rgba(0, 0, 0, 0.6);
 }
 
@@ -74,16 +74,16 @@
 }
 
 .primary {
-  color: #05121f;
+  color: #121212;
   border: 1px solid transparent;
-  background: linear-gradient(118deg, #8fe4ff, #b69bff);
-  box-shadow: 0 6px 26px rgba(95, 217, 255, 0.28);
+  background: linear-gradient(118deg, #c7c7c7, #cdcdcd);
+  box-shadow: 0 6px 26px rgba(175, 175, 175, 0.28);
 }
 
 .primary:hover,
 .primary:focus-visible {
   transform: translateY(-2px);
-  box-shadow: 0 10px 34px rgba(95, 217, 255, 0.42);
+  box-shadow: 0 10px 34px rgba(251, 146, 60, 0.42);
 }
 
 /* Download glyph: a stem with an arrowhead, drawn without an icon dependency. */
@@ -119,9 +119,9 @@
 }
 
 .secondary {
-  color: #dce6ff;
-  background: rgba(120, 160, 255, 0.06);
-  border: 1px solid rgba(120, 160, 255, 0.32);
+  color: #eeeeee;
+  background: rgba(188, 188, 188, 0.06);
+  border: 1px solid rgba(249, 115, 22, 0.32);
 }
 
 .secondary:hover,
@@ -129,7 +129,7 @@
   transform: translateY(-2px);
   color: #fff;
   border-color: var(--cyan);
-  background: rgba(95, 217, 255, 0.12);
+  background: rgba(175, 175, 175, 0.12);
 }
 
 .links {
@@ -155,7 +155,7 @@
   font-family: var(--font-mono);
   font-size: 10px;
   letter-spacing: 0.3em;
-  color: #7e8cae;
+  color: #969696;
 }
 
 .scrollArrow {

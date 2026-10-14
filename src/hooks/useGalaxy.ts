@@ -20,7 +20,7 @@ interface StarManifest {
 }
 
 const ASSETS = `${import.meta.env.BASE_URL}space/milkyway`;
-const BG = 0x04060e; // --bg; the canvas is opaque and matches the page
+const BG = 0x090909; // --bg; the canvas is opaque and matches the page
 const EXTENT = 130; // kly covered by the disc texture (matches the Blender bake)
 const FOV = 40;
 const START_FIT_WIDTH = 92; // kly of galaxy spanning the screen width at the top of the page
@@ -92,7 +92,7 @@ function startGalaxy(THREE: Three, canvas: HTMLCanvasElement): () => void {
   try {
     renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance' });
   } catch {
-    return () => {}; // no WebGL: nebulae and starfield still cover the backdrop
+    return () => {}; // no WebGL: the starfield still covers the backdrop
   }
   const reduced = prefersReducedMotion();
   const small = isCoarsePointer() || window.innerWidth < 768;
@@ -297,7 +297,7 @@ export function useGalaxy(canvasRef: RefObject<HTMLCanvasElement>): void {
         if (!disposed) stop = startGalaxy(THREE, canvas);
       })
       .catch(() => {
-        /* nebulae and starfield still cover the backdrop */
+        /* the starfield still covers the backdrop */
       });
     return () => {
       disposed = true;

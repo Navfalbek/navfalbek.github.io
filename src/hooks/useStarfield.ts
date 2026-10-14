@@ -6,7 +6,8 @@ import {
   type Animation,
 } from '../lib/motion';
 
-const PALETTE = ['180,235,255', '160,200,255', '205,185,255', '255,238,225'];
+// Neutral and warm whites, matching the black theme and the galaxy's starlight.
+const PALETTE = ['236,236,236', '255,244,230', '248,248,248', '255,228,200'];
 const STAR_COUNT = 520;
 /** Phones pay for every stroked line — halve the field and the pixel budget. */
 const STAR_COUNT_MOBILE = 240;

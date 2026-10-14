@@ -1,18 +1,18 @@
 :root {
   /* Palette */
-  --bg: #04060e;
-  --text: #e8ecf5;
-  --cyan: #5fd9ff;
-  --purple: #a87bff;
-  --pink: #ff7ac4;
+  --bg: #090909;
+  --text: #efefef;
+  --cyan: #fb923c;
+  --purple: #fdba74;
+  --pink: #fdba74;
 
   /* Fonts — self-hosted variable faces, see main.tsx */
   --font-display: 'Space Grotesk Variable', 'Space Grotesk', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, monospace;
 
   /* Surfaces */
-  --glass-bg: rgba(11, 17, 33, 0.55);
-  --glass-border: rgba(120, 160, 255, 0.14);
+  --glass-bg: rgba(22, 22, 22, 0.55);
+  --glass-border: rgba(188, 188, 188, 0.14);
 
   /* Layout */
   --nav-h: 62px;
@@ -40,7 +40,7 @@ body {
 }
 
 ::selection {
-  background: rgba(95, 217, 255, 0.3);
+  background: rgba(251, 146, 60, 0.3);
   color: #fff;
 }
 

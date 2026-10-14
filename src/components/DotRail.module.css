@@ -17,7 +17,7 @@
   border: none;
   cursor: pointer;
   padding: 0;
-  background: rgba(150, 180, 255, 0.25);
+  background: rgba(203, 203, 203, 0.25);
   transition: transform 0.3s, background 0.3s, box-shadow 0.3s;
 }
 
