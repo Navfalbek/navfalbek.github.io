@@ -107,6 +107,7 @@ function startGalaxy(THREE: Three, canvas: HTMLCanvasElement): () => void {
   scene.add(galaxy);
   const disposables: { dispose(): void }[] = [];
   let anim: Animation | null = null;
+  let disposed = false; // assets that arrive after teardown are dropped, not drawn
   let shownAt = 0; // when the disc texture arrived, for the fade-in
 
   // --- the disc: face-on Cycles bake on a plane (galactic plane = XZ, north = +Y)
@@ -128,8 +129,8 @@ function startGalaxy(THREE: Three, canvas: HTMLCanvasElement): () => void {
   const loader = new THREE.TextureLoader();
   sizes.forEach((size, rank) =>
     loader.load(`${ASSETS}/galaxy_${size}.webp`, (texture) => {
-      if (rank < bestLoaded) {
-        texture.dispose(); // a sharper texture already arrived
+      if (disposed || rank < bestLoaded) {
+        texture.dispose(); // torn down, or a sharper texture already arrived
         return;
       }
       bestLoaded = rank;
@@ -177,12 +178,18 @@ function startGalaxy(THREE: Three, canvas: HTMLCanvasElement): () => void {
     transparent: true,
   });
   disposables.push(starMaterial);
-  fetch(`${ASSETS}/stars.json`)
+  const fetchOk = (url: string) =>
+    fetch(url).then((response) => {
+      if (!response.ok) throw new Error(`${response.status} ${url}`);
+      return response;
+    });
+  fetchOk(`${ASSETS}/stars.json`)
     .then((response) => response.json() as Promise<StarManifest>)
     .then((manifest) =>
-      fetch(`${ASSETS}/${small ? 'stars_m' : 'stars_d'}.bin`)
+      fetchOk(`${ASSETS}/${small ? 'stars_m' : 'stars_d'}.bin`)
         .then((response) => response.arrayBuffer())
         .then((buffer) => {
+          if (disposed) return;
           const count = small ? manifest.mobile : manifest.desktop;
           const quantised = new Int16Array(buffer, 0, count * 3);
           const colours = new Uint8Array(buffer, count * 6, count * 4);
@@ -273,6 +280,7 @@ function startGalaxy(THREE: Three, canvas: HTMLCanvasElement): () => void {
   anim = runAnimation(draw);
 
   return () => {
+    disposed = true;
     anim?.stop();
     window.removeEventListener('scroll', onScroll);
     window.removeEventListener('resize', resize);
